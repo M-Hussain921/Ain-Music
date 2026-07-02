@@ -1,16 +1,121 @@
-# React + Vite
+# 🎵 Music Web Player
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A **Spotify-inspired music streaming web application** built using **React + Vite**, featuring modular architecture, reusable components, and global state management using Context API.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Features
 
-## React Compiler
+* ▶️ Play / Pause songs with custom audio controls
+* ❤️ Add / Remove songs from Favorites
+* 📂 Create and manage Playlists
+* 🎧 Album & Artist browsing
+* 🔁 Recently Added & Most Played sections
+* 🔐 Authentication (Sign In / Sign Up UI)
+* 🛡️ Protected Routes for authorized access
+* 📱 Responsive UI with clean layout
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🏗️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* **Frontend:** React (Vite)
+* **State Management:** Context API
+* **Routing:** React Router
+* **Styling:** CSS
+* **Icons:** React Icons
+* **API:** Unofficial JioSaavn API
+
+---
+
+## 📁 Folder Structure
+
+```
+frontend/
+│── public/
+│── src/
+│   ├── assets/
+│   ├── auth/
+│   │   └── ProtectedRoute.jsx
+│   ├── components/
+│   │   ├── AddToPlaylistButton.jsx
+│   │   ├── AudioPlayButton.jsx
+│   │   ├── FavoriteButton.jsx
+│   │   ├── Navbar.jsx
+│   │   ├── Player.jsx
+│   │   ├── Sidebar.jsx
+│   │   ├── SongCard.jsx
+│   │   └── ...
+│   ├── context/
+│   │   └── MusicContext.jsx
+│   ├── pages/
+│   │   ├── Home.jsx
+│   │   ├── Albums.jsx
+│   │   ├── Artists.jsx
+│   │   ├── YourPlaylist.jsx
+│   │   └── ...
+│   ├── Routes/
+│   │   └── AppRoute.jsx
+│   ├── utils/
+│   │   └── SongDuration.js
+│   ├── App.jsx
+│   └── main.jsx
+```
+
+---
+
+## ⚙️ Installation & Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/M-Hussain921/Ain-Music.git
+
+# Navigate to project
+cd music-app/frontend
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+```
+
+---
+
+## 🔌 API Information
+
+This project uses an **unofficial JioSaavn API** for fetching songs, albums, and artist data.
+
+> ⚠️ Note: This API is not officially supported and may break or change without notice.
+
+---
+
+## 🧠 Architecture Highlights
+
+* Component-based scalable structure
+* Reusable UI elements (Play, Favorite, Playlist buttons)
+* Centralized state management using Context API
+* Clean separation of concerns (components, pages, utils)
+
+---
+
+## 📌 Future Improvements
+
+* 🔊 Volume & seek control enhancements
+* 💾 Backend integration (Node.js + MongoDB)
+* 🔑 Real authentication (JWT)
+* 📊 User listening analytics
+* 🎨 UI/UX improvements
+
+---
+
+## 👨‍💻 Author
+
+**Mohammed Hussain**
+MERN Stack Developer
+
+---
+
+## ⭐ Support
+
+If you like this project, consider giving it a ⭐ on GitHub!
