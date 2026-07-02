@@ -22,7 +22,7 @@ A **Spotify-inspired music streaming web application** built using **React + Vit
 * **Frontend:** React (Vite)
 * **State Management:** Context API
 * **Routing:** React Router
-* **Styling:** CSS
+* **Styling:** TailwindCSS
 * **Icons:** React Icons
 * **API:** Unofficial JioSaavn API
 
