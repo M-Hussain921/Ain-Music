@@ -12,7 +12,8 @@ import {
 } from "react-icons/fi";
 import { MusicContext } from "../context/MusicContext";
 import { formatTime } from "../utils/SongDuration.js";
-import {FavoriteButton} from "../components/FavoriteButton.jsx";
+import { FavoriteButton } from "../components/FavoriteButton.jsx";
+import { AddToPlaylistButton } from "../components/AddToPlaylistButton.jsx";
 
 export const Player = () => {
   const {
@@ -28,31 +29,31 @@ export const Player = () => {
     handleEnded,
     shuffleQueue,
     isShuffled,
-    currentIndex
+    currentIndex,
   } = useContext(MusicContext);
 
   const audioRef = useRef(null);
-const restartedRef=useRef(false);
+  const restartedRef = useRef(false);
 
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
 
- useEffect(() => {
-  const audio = audioRef.current;
-  if (!audio || !currentSong) return;
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !currentSong) return;
 
-  audio.src = currentSong.audioUrl;
+    audio.src = currentSong.audioUrl;
 
-  const playPromise = audio.play();
-  if (playPromise !== undefined) {
-    playPromise.catch(() => {});
-  }
-}, [currentSong]);
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {});
+    }
+  }, [currentSong]);
 
-useEffect(() => {
-  restartedRef.current = false;
-}, [currentSong]);
+  useEffect(() => {
+    restartedRef.current = false;
+  }, [currentSong]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -78,17 +79,17 @@ useEffect(() => {
   }, [currentSong]);
 
   const handlePreviousClick = () => {
-  const audio = audioRef.current;
-  if (!restartedRef.current) {
-    if (audio) {
-      audio.currentTime = 0;
-      setProgress(0);
+    const audio = audioRef.current;
+    if (!restartedRef.current) {
+      if (audio) {
+        audio.currentTime = 0;
+        setProgress(0);
+      }
+      restartedRef.current = true;
+    } else {
+      playPrevious();
     }
-    restartedRef.current = true;
-  } else {
-    playPrevious();
-  }
-};
+  };
 
   const handleSeek = (e) => {
     const newTime = Number(e.target.value);
@@ -112,8 +113,8 @@ useEffect(() => {
     <>
       <audio ref={audioRef} />
 
-      <div className="w-full m-auto h-22.5 bg-surface border-t border-brand-light/40 px-4 flex items-center justify-between z-50 bottom-0 left-0">
-        <div className="flex items-center gap-4 w-[30%] min-w-45">
+      <div className="w-full m-auto h-22.5 bg-surface border-t rounded-t-3xl border-brand-light/40 px-5 flex items-center justify-between z-50 bottom-0 left-0">
+        <div className="flex items-center gap-4 max-w-45 min-w-45">
           <img
             src={currentSong.coverArt}
             alt={currentSong.title}
@@ -127,40 +128,9 @@ useEffect(() => {
               {currentSong.artist}
             </p>
           </div>
-          <FavoriteButton song={currentSong} />
-
-          <div className="flex justify-center items-center gap-4 ">
-            <button
-              onClick={() => toggleFavorite(currentSong)}
-              className="ml-2"
-            >
-              {/* <FiHeart
-                className={`text-lg transition ${isFav ? "text-brand-primary fill-brand-primary scale-110" : "text-text-secondary hover:text-text-primary"}`}
-              /> */}
-            </button>
-            <div className="relative">
-              <button onClick={handleAddClick}>
-                <FiPlusCircle className="text-lg text-text-secondary hover:text-text-primary transition" />
-              </button>
-
-              {menuOpen && (
-                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-surface border border-brand-light/40 rounded-lg shadow-xl w-44 py-1 z-10">
-                  {playlists.map((pl) => (
-                    <button
-                      key={pl.id}
-                      onClick={() => handlePlaylistSelect(pl.id)}
-                      className="block w-full text-left px-3 py-2 text-sm text-text-secondary hover:bg-brand-light/20 hover:text-text-primary"
-                    >
-                      {pl.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
         </div>
 
-        <div className="flex flex-col items-center justify-center w-[40%] max-w-150 gap-2">
+        <div className="flex flex-col items-center justify-center w-[40%] max-w-150 gap-2 m-auto">
           <div className="flex items-center gap-6">
             <FiShuffle
               onClick={shuffleQueue}
@@ -211,6 +181,27 @@ useEffect(() => {
             </span>
           </div>
         </div>
+
+        <div className="flex justify-center items-center gap-5 pr-5 mr-5">
+            <FavoriteButton song={currentSong} />
+            <div className="relative">
+              <AddToPlaylistButton song={currentSong} />
+
+              {menuOpen && (
+                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-surface border border-brand-light/40 rounded-lg shadow-xl w-44 py-1 z-10">
+                  {playlists.map((pl) => (
+                    <button
+                      key={pl.id}
+                      onClick={() => handlePlaylistSelect(pl.id)}
+                      className="block w-full text-left px-3 py-2 text-sm text-text-secondary hover:bg-brand-light/20 hover:text-text-primary"
+                    >
+                      {pl.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
       </div>
     </>
   );

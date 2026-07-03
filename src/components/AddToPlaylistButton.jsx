@@ -1,13 +1,13 @@
 import { useContext } from "react";
 import { MusicContext } from "../context/MusicContext";
-import { FiPlus } from "react-icons/fi";
+import { FiPlusCircle } from "react-icons/fi";
 
 export const AddToPlaylistButton = ({ song }) => {
-  const { addToPlaylist } = useContext(MusicContext);
+  const { addSongToPlaylist } = useContext(MusicContext);
 
   return (
-    <button onClick={() => addToPlaylist(song)}>
-      <FiPlus />
+    <button onClick={() => addSongToPlaylist(song)}>
+      <FiPlusCircle className="text-text-secondary mt-1.5 hover:text-brand-primary cursor-pointer text-lg transition" />
     </button>
   );
 };

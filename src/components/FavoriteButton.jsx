@@ -10,7 +10,7 @@ export const FavoriteButton = ({ song }) => {
   return (
     <button 
     onClick={() => toggleFavorite(song)}>
-      {isFavorite ? <FaHeart className className={`text-lg transition ${isFav ? " fill-brand-primary scale-110" : "text-text-secondary hover:text-text-primary"}`} /> : <FaRegHeart />}
+      {isFavorite ? <FaHeart className={`text-lg transition ${isFavorite ? " fill-brand-primary scale-110" : "text-text-secondary hover:text-text-primary"}`} /> : <FaRegHeart />}
     </button>
   );
 };
