@@ -104,7 +104,7 @@ async function fetchAlbumDetails(id) {
         song.downloadUrl?.[song.downloadUrl.length - 1]?.link,
       duration: song.duration,
     }));
-    return{
+    return {
       id: album.id,
       title: album.name,
       image: album.image?.[2]?.url || "https://via.placeholder.com/150",
@@ -124,7 +124,6 @@ export function MusicProvider({ children }) {
     topAlbums: [],
   });
   const [searchResults, setSearchResults] = useState([]);
-  const [currentSong, setCurrentSong] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
   const [favorites, setFavorites] = useState([]);
@@ -134,43 +133,108 @@ export function MusicProvider({ children }) {
 
   const [queue, setQueue] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [originalQueue, setOriginalQueue] = useState([]);
+  const [history, setHistory] = useState([]);
 
-  const playSong = (song) => {
-    setCurrentSong(song);
-    setIsPlaying(true);
-  };
+  const [isShuffled, setIsShuffled] = useState(true);
+  const [repeatMode, setRepeatMode] = useState("off");
+
+  const currentSong = queue[currentIndex];
+
+const playSong = (song, songList = queue) => {
+  const index = songList.findIndex((s) => s.id === song.id);
+  if (index === -1) {
+    setQueue([song]);
+    setOriginalQueue([song]);
+    setCurrentIndex(0);
+  } else {
+    setQueue(songList);
+    setOriginalQueue(songList);
+    setCurrentIndex(index);
+  }
+  setIsPlaying(true);
+};
 
   const togglePlayPause = () => {
     setIsPlaying((prev) => !prev);
   };
 
-  const playAlbum=(songs,startIndex=0)=>{
-    if(!songs || songs.length===0) return;
-    setQueue(songs);
-    setCurrentIndex(startIndex);
-    setCurrentSong(songs[startIndex]);
-    setIsPlaying(true);
+  const toggleRepeat = () => {
+  setRepeatMode(prev => {
+    if (prev === "off") return "all";
+    if (prev === "all") return "one";
+    return "off";
+  });
+};
+
+  const playAlbum = (songs, startIndex = 0) => {
+  if (!songs || songs.length === 0) return;
+
+  setQueue(songs);
+  setOriginalQueue(songs);
+  setCurrentIndex(startIndex);
+  setIsPlaying(true);
+};
+
+  const playNext = () => {
+    if (repeatMode === "one") {
+      return;
+    }
+
+    setHistory((prev) => [...prev, queue[currentIndex]]);
+
+   if (currentIndex < queue.length - 1) {
+  setCurrentIndex(prev => prev + 1);
+} else {
+  if (repeatMode === "all") {
+    setCurrentIndex(0);
+  } else {
+    setIsPlaying(false); 
+  }
+}
   };
 
-const playNext=()=>{
-  if(queue.length===0) return;
-  const nextIndex=(currentIndex+1)%queue.length;
-  setCurrentIndex(nextIndex);
-  setCurrentSong(queue[nextIndex]);
-  setIsPlaying(true);
+ const playPrevious = () => {
+  if (currentIndex > 0) {
+    setCurrentIndex((prev) => prev - 1);
+  } else if (repeatMode === "all") {
+    setCurrentIndex(queue.length - 1);
+  }
 };
+  const shuffleQueue = () => {
+    if (queue.length === 0) return;
 
-const playPrevious=()=>{
-  if(queue.length===0) return;
-  const prevIndex=(currentIndex-1+queue.length)%queue.length;
-  setCurrentIndex(prevIndex);
-  setCurrentSong(queue[prevIndex]);
-  setIsPlaying(true);
-};
+    if (isShuffled) {
+      // restore original
+      const index = originalQueue.findIndex(
+        (s) => s.id === queue[currentIndex].id,
+      );
 
-const handleEnded = () => {
-  playNext();
-};
+      setQueue(originalQueue);
+      setCurrentIndex(index);
+      setIsShuffled(false);
+      return;
+    }
+
+    const current = queue[currentIndex];
+    const newQueue = [...queue];
+
+    for (let i = newQueue.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newQueue[i], newQueue[j]] = [newQueue[j], newQueue[i]];
+    }
+
+    const newIndex = newQueue.findIndex((s) => s.id === current.id);
+
+    setOriginalQueue(queue);
+    setQueue(newQueue);
+    setCurrentIndex(newIndex);
+    setIsShuffled(true);
+  };
+
+  const handleEnded = () => {
+    playNext();
+  };
 
   const loadHomePageContent = async () => {
     try {
@@ -271,7 +335,7 @@ const handleEnded = () => {
         searchResults,
         searchMusic,
         currentSong,
-        setCurrentSong,
+        currentIndex,
         isPlaying,
         setIsPlaying,
         favorites,
@@ -290,7 +354,11 @@ const handleEnded = () => {
         togglePlayPause,
         currentIndex,
         queue,
-        handleEnded
+        handleEnded,
+        shuffleQueue,
+        isShuffled,
+        toggleRepeat,
+        repeatMode,
       }}
     >
       {children}

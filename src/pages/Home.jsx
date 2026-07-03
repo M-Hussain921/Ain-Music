@@ -46,6 +46,7 @@ export const Home = () => {
         </div>
       </section>
 
+<div className="px-4 py-5">
       <SongSection
         titleStart="Weekly Top"
         titleHighlight="Songs"
@@ -64,6 +65,7 @@ export const Home = () => {
       <AlbumSection/>
       <SignUpPage/>
       <Footer/>
+      </div>
 
     </div>
   );

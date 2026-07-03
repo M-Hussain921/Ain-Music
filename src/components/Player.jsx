@@ -12,6 +12,7 @@ import {
 } from "react-icons/fi";
 import { MusicContext } from "../context/MusicContext";
 import { formatTime } from "../utils/SongDuration.js";
+import {FavoriteButton} from "../components/FavoriteButton.jsx";
 
 export const Player = () => {
   const {
@@ -24,21 +25,34 @@ export const Player = () => {
     addSongToPlaylist,
     playNext,
     playPrevious,
-    handleEnded
+    handleEnded,
+    shuffleQueue,
+    isShuffled,
+    currentIndex
   } = useContext(MusicContext);
 
   const audioRef = useRef(null);
+const restartedRef=useRef(false);
+
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    if (!currentSong) return;
-    const audio = audioRef.current;
-    audio.src = currentSong.audioUrl;
-    audio.play();
-    setIsPlaying(true);
-  }, [currentSong, setIsPlaying]);
+ useEffect(() => {
+  const audio = audioRef.current;
+  if (!audio || !currentSong) return;
+
+  audio.src = currentSong.audioUrl;
+
+  const playPromise = audio.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(() => {});
+  }
+}, [currentSong]);
+
+useEffect(() => {
+  restartedRef.current = false;
+}, [currentSong]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -53,17 +67,28 @@ export const Player = () => {
     const updateProgress = () => setProgress(audio.currentTime);
     const updateDuration = () => setDuration(audio.duration);
 
-    audio.addEventListener("ended", playNext);
     audio.addEventListener("timeupdate", updateProgress);
     audio.addEventListener("loadedmetadata", updateDuration);
-    audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("ended", playNext);
 
     return () => {
       audio.removeEventListener("timeupdate", updateProgress);
       audio.removeEventListener("loadedmetadata", updateDuration);
-      audio.removeEventListener("ended", handleEnded);
     };
   }, [currentSong]);
+
+  const handlePreviousClick = () => {
+  const audio = audioRef.current;
+  if (!restartedRef.current) {
+    if (audio) {
+      audio.currentTime = 0;
+      setProgress(0);
+    }
+    restartedRef.current = true;
+  } else {
+    playPrevious();
+  }
+};
 
   const handleSeek = (e) => {
     const newTime = Number(e.target.value);
@@ -87,7 +112,7 @@ export const Player = () => {
     <>
       <audio ref={audioRef} />
 
-      <div className="w-full h-22.5 bg-surface border-t border-brand-light/40 px-4 flex items-center justify-between z-50 bottom-0 left-0">
+      <div className="w-full m-auto h-22.5 bg-surface border-t border-brand-light/40 px-4 flex items-center justify-between z-50 bottom-0 left-0">
         <div className="flex items-center gap-4 w-[30%] min-w-45">
           <img
             src={currentSong.coverArt}
@@ -102,15 +127,16 @@ export const Player = () => {
               {currentSong.artist}
             </p>
           </div>
+          <FavoriteButton song={currentSong} />
 
           <div className="flex justify-center items-center gap-4 ">
             <button
               onClick={() => toggleFavorite(currentSong)}
               className="ml-2"
             >
-              <FiHeart
+              {/* <FiHeart
                 className={`text-lg transition ${isFav ? "text-brand-primary fill-brand-primary scale-110" : "text-text-secondary hover:text-text-primary"}`}
-              />
+              /> */}
             </button>
             <div className="relative">
               <button onClick={handleAddClick}>
@@ -136,10 +162,19 @@ export const Player = () => {
 
         <div className="flex flex-col items-center justify-center w-[40%] max-w-150 gap-2">
           <div className="flex items-center gap-6">
-            <FiShuffle className="text-text-secondary hover:text-brand-primary cursor-pointer text-lg transition" />
+            <FiShuffle
+              onClick={shuffleQueue}
+              className={`cursor-pointer text-lg transition 
+    ${
+      isShuffled
+        ? "text-brand-primary"
+        : "text-text-secondary hover:text-brand-primary"
+    }`}
+            />
             <FiSkipBack
-            onClick={playPrevious}
-            className="text-text-secondary hover:text-text-primary cursor-pointer text-xl transition hover:scale-105" />
+              onClick={handlePreviousClick}
+              className="text-text-secondary hover:text-text-primary cursor-pointer text-xl transition hover:scale-105"
+            />
 
             <button
               onClick={() => setIsPlaying(!isPlaying)}
@@ -153,8 +188,9 @@ export const Player = () => {
             </button>
 
             <FiSkipForward
-            onClick={playNext}
-             className="text-text-secondary hover:text-text-primary cursor-pointer text-xl transition hover:scale-105" />
+              onClick={playNext}
+              className="text-text-secondary hover:text-text-primary cursor-pointer text-xl transition hover:scale-105"
+            />
             <FiRepeat className="text-text-secondary hover:text-brand-primary cursor-pointer text-lg transition" />
           </div>
 
@@ -174,15 +210,6 @@ export const Player = () => {
               {formatTime(duration)}
             </span>
           </div>
-        </div>
-
-        <div className="flex items-center justify-end gap-3 w-[30%] min-w-45">
-          <FiVolume2 className="text-text-secondary hover:text-text-primary cursor-pointer text-lg" />
-          <input
-            type="range"
-            className="w-24 h-1.5 bg-brand-light/30 rounded-full appearance-none cursor-pointer accent-text-secondary hover:accent-brand-primary"
-            defaultValue="80"
-          />
         </div>
       </div>
     </>
