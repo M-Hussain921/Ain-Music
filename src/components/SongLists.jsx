@@ -1,12 +1,12 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { MusicContext } from "../context/MusicContext";
+import { MusicContext } from "../context/MusicContext.jsx";
 import { FiArrowLeft, FiPlay, FiPause } from "react-icons/fi";
-import { PlayButton } from "../components/AudioPlayButton";
+import { PlayButton } from "./AudioPlayButton.jsx";
 import { formatTime } from "../utils/SongDuration.js";
-import { FavoriteButton } from "../components/FavoriteButton";
+import { FavoriteButton } from "./FavoriteButton.jsx";
 
-export const AlbumPage = () => {
+export const SongLists = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 

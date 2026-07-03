@@ -183,25 +183,25 @@ export const Player = () => {
         </div>
 
         <div className="flex justify-center items-center gap-5 pr-5 mr-5">
-            <FavoriteButton song={currentSong} />
-            <div className="relative">
-              <AddToPlaylistButton song={currentSong} />
+          <FavoriteButton song={currentSong} />
+          <div className="relative">
+            <AddToPlaylistButton song={currentSong} />
 
-              {menuOpen && (
-                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-surface border border-brand-light/40 rounded-lg shadow-xl w-44 py-1 z-10">
-                  {playlists.map((pl) => (
-                    <button
-                      key={pl.id}
-                      onClick={() => handlePlaylistSelect(pl.id)}
-                      className="block w-full text-left px-3 py-2 text-sm text-text-secondary hover:bg-brand-light/20 hover:text-text-primary"
-                    >
-                      {pl.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            {menuOpen && (
+              <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-surface border border-brand-light/40 rounded-lg shadow-xl w-44 py-1 z-10">
+                {playlists.map((pl) => (
+                  <button
+                    key={pl.id}
+                    onClick={() => handlePlaylistSelect(pl.id)}
+                    className="block w-full text-left px-3 py-2 text-sm text-text-secondary hover:bg-brand-light/20 hover:text-text-primary"
+                  >
+                    {pl.name}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
+        </div>
       </div>
     </>
   );

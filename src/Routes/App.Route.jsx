@@ -4,7 +4,7 @@ import { Sidebar } from "../components/Sidebar.jsx";
 import { SignIn } from "../pages/SignInPage.jsx";
 import { SignUpPage } from "../pages/SignUpPage.jsx";
 import { AddPlaylist } from "../pages/AddPlaylist.jsx";
-import { AlbumPage } from "../pages/Albums.jsx";
+import { SongLists } from "../components/SongLists.jsx";
 import { Artists } from "../pages/Artists.jsx";
 import { Home } from "../pages/Home.jsx";
 import { MostPlayed } from "../pages/MostPlayed.jsx";
@@ -13,6 +13,7 @@ import { YourFavorites } from "../pages/YourFavorites.jsx";
 import { YourPlaylist } from "../pages/YourPlaylist.jsx";
 import { Layout } from "../components/Layout.jsx";
 import { Settings } from "../pages/settingsPage.jsx";
+import { AlbumPage } from "../pages/AlbumPage.jsx";
 
 export const AppRoute = () => {
   return (
@@ -27,7 +28,7 @@ export const AppRoute = () => {
         <Route path="your-favorites" element={<YourFavorites />} />
         <Route path="add-playlist" element={<AddPlaylist />} />
         <Route path="settings" element={<Settings />} />
-        <Route path="/album/:id" element={<AlbumPage />} />
+        <Route path="/album/:id" element={<SongLists />} />
       </Route>
     </Routes>
   );

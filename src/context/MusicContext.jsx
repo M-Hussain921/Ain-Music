@@ -72,7 +72,7 @@ async function fetchAlbumsByQuery(query, limit = 10) {
     return results.map((album) => ({
       id: album.id,
       title: album.name,
-      artist: album.primaryArtists || "Unknown",
+      artist:album.artists.primary[0].name|| "Unknown",
       image: album.image?.[2]?.url || "https://via.placeholder.com/150",
       year: album.year,
     }));
@@ -107,6 +107,7 @@ async function fetchAlbumDetails(id) {
     return {
       id: album.id,
       title: album.name,
+      artist: album.primaryArtists || "Unknown Artist",
       image: album.image?.[2]?.url || "https://via.placeholder.com/150",
       songs,
     };
@@ -122,6 +123,8 @@ export function MusicProvider({ children }) {
     newReleases: [],
     popularArtist: [],
     topAlbums: [],
+    trendingAlbums: [],
+    newReleaseAlbums: [], 
   });
   const [searchResults, setSearchResults] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -136,10 +139,12 @@ export function MusicProvider({ children }) {
   const [originalQueue, setOriginalQueue] = useState([]);
   const [history, setHistory] = useState([]);
 
-  const [isShuffled, setIsShuffled] = useState(true);
+  const [isShuffled, setIsShuffled] = useState(false);
   const [repeatMode, setRepeatMode] = useState("off");
 
   const currentSong = queue[currentIndex];
+
+  const [currentAlbumId, setCurrentAlbumId] = useState(null);
 
 const playSong = (song, songList = queue) => {
   const index = songList.findIndex((s) => s.id === song.id);
@@ -152,6 +157,7 @@ const playSong = (song, songList = queue) => {
     setOriginalQueue(songList);
     setCurrentIndex(index);
   }
+   setCurrentAlbumId(null);
   setIsPlaying(true);
 };
 
@@ -167,12 +173,13 @@ const playSong = (song, songList = queue) => {
   });
 };
 
-  const playAlbum = (songs, startIndex = 0) => {
+  const playAlbum = (songs, startIndex = 0, albumId = null) => {
   if (!songs || songs.length === 0) return;
 
   setQueue(songs);
   setOriginalQueue(songs);
   setCurrentIndex(startIndex);
+  setCurrentAlbumId(albumId);
   setIsPlaying(true);
 };
 
@@ -238,9 +245,11 @@ const playSong = (song, songList = queue) => {
 
   const loadHomePageContent = async () => {
     try {
-      const [weeklyTop, newReleases] = await Promise.all([
+      const [weeklyTop, newReleases, trendingAlbums, newReleaseAlbums] = await Promise.all([
         fetchSongsByQuery("trending bollywood", 12),
         fetchSongsByQuery("New bollywood", 12),
+        fetchAlbumsByQuery("trending bollywood", 15),   
+      fetchAlbumsByQuery("new bollywood", 15),
       ]);
 
       const internationalArtists = [
@@ -282,6 +291,8 @@ const playSong = (song, songList = queue) => {
         newReleases,
         popularArtist,
         topAlbums: uniqueAlbums,
+        trendingAlbums,              
+      newReleaseAlbums,
       });
     } catch (error) {
       console.error("Home content fetching error", error);
