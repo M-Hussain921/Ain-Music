@@ -5,7 +5,6 @@ import {SongSection} from "../components/SongSection";
 import { ArtistSection } from "../components/ArtistSection";
 import {AlbumSection} from "../components/AlbumSection";
 import {SignUpPage} from "./SignUpPage.jsx";
-import { Footer } from "../components/Footer.jsx";
 
 export const Home = () => {
   const {homeContent}=useContext(MusicContext);
@@ -64,7 +63,6 @@ export const Home = () => {
       <ArtistSection/>
       <AlbumSection/>
       <SignUpPage/>
-      <Footer/>
       </div>
 
     </div>

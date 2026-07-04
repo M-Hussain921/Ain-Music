@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { MusicContext } from "../context/MusicContext";
 import { AlbumPlayButton } from "../components/AlbumPlayButton";
-import { Footer } from "../components/Footer";
 
 const AlbumGrid = ({ title, albums, navigate }) => {
   if (!albums || albums.length === 0) return null;
@@ -66,7 +65,6 @@ export const AlbumPage = () => {
         <h2 className="m-auto text-center text-text-secondary text-xl font-semibold font-mono mt-10">
           ----- Loop it. Live it. -----
         </h2>
-        <Footer />
       </div>
     </div>
   );

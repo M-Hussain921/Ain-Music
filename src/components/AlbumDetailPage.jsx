@@ -6,7 +6,7 @@ import { PlayButton } from "./AudioPlayButton.jsx";
 import { formatTime } from "../utils/SongDuration.js";
 import { FavoriteButton } from "./FavoriteButton.jsx";
 
-export const SongLists = () => {
+export const AlbumDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -148,7 +148,7 @@ export const SongLists = () => {
                 </div>
                 <div className="flex items-center gap-5">
                   <FavoriteButton song={song} />
-                   <div className="text-xs text-text-secondary w-10 text-left font-medium">
+                  <div className="text-xs text-text-secondary w-10 text-left font-medium">
                     {formatTime(song.duration)}
                   </div>
                 </div>

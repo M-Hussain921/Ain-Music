@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { Navbar } from "./Navbar";
 import { Player } from "./Player";
+import { Footer } from "./Footer";
 
 export const Layout = () => {
   return (
@@ -14,8 +15,11 @@ export const Layout = () => {
           <Navbar />
           <main className="flex-1 overflow-y-auto">
             <Outlet />
+             <Footer/>
           </main>
+         
         </div>
+        
       </div>
       <Player />
     </div>

@@ -104,6 +104,32 @@ async function fetchArtistDetails(id) {
     const data = await res.json();
     const artist = data?.data;
     if (!artist) return null;
+
+    const bioText = (artist.bio || [])
+      .filter((b) => b?.text)
+      .sort((a, b) => (a.sequence || 0) - (b.sequence || 0))
+      .map((b) => b.text)
+      .join("\n\n");
+
+    const topSongs = (artist.topSongs || []).map(mapRawSongToSongs);
+    const allSongs = (artist.songs || []).map(mapRawSongToSongs);
+
+    const topAlbums = (artist.topAlbums || []).map((album) => ({
+      id: album.id,
+      title: album.name,
+      artist: album.artists?.primary?.[0]?.name || "Unknown",
+      image: album.image?.[2]?.url || "https://via.placeholder.com/150",
+      songCount: album.songCount,
+    }));
+
+    return {
+      id: artist.id,
+      name: artist.name,
+      image: artist.image?.[2]?.url || "https://via.placeholder.com/150",
+      bio: bioText || null,
+      topSongs,
+      topAlbums,
+    };
   } catch (err) {
     console.warn("Artist details fetch error:", err);
     return null;
@@ -138,6 +164,7 @@ export function MusicProvider({ children }) {
   const currentSong = queue[currentIndex];
 
   const [currentAlbumId, setCurrentAlbumId] = useState(null);
+  const [currentArtistId, setCurrentArtistId] = useState(null);
 
   const playSong = (song, songList = queue) => {
     const index = songList.findIndex((s) => s.id === song.id);
@@ -151,6 +178,7 @@ export function MusicProvider({ children }) {
       setCurrentIndex(index);
     }
     setCurrentAlbumId(null);
+    setCurrentArtistId(null);
     setIsPlaying(true);
   };
 
@@ -173,6 +201,17 @@ export function MusicProvider({ children }) {
     setOriginalQueue(songs);
     setCurrentIndex(startIndex);
     setCurrentAlbumId(albumId);
+    setCurrentArtistId(null);
+    setIsPlaying(true);
+  };
+
+  const PlayArtistSongs = (songs, startIndex = 0, artistId = null) => {
+    if (!songs || songs.length === 0) return;
+    setQueue(songs);
+    setOriginalQueue(songs);
+    setCurrentIndex(startIndex);
+    setCurrentAlbumId(null);
+    setCurrentArtistId(artistId);
     setIsPlaying(true);
   };
 
@@ -280,16 +319,6 @@ export function MusicProvider({ children }) {
       );
 
       const broadArtistQueries = [
-        "Taylor Swift",
-        "Ed Sheeran",
-        "Drake",
-        "Billie Eilish",
-        "The Weeknd",
-        "Justin Bieber",
-        "Ariana Grande",
-        "Bruno Mars",
-        "Dua Lipa",
-        "Coldplay",
         "Arijit Singh",
         "Shreya Ghoshal",
         "Sonu Nigam",
@@ -297,43 +326,11 @@ export function MusicProvider({ children }) {
         "Neha Kakkar",
         "A.R. Rahman",
         "Jubin Nautiyal",
-        "KK",
+        "KK singer",
         "Mohit Chauhan",
-        "BTS",
-        "Jungkook",
-        "Blackpink",
-        "Jennie",
-        "Lisa",
-        "EXO",
-        "Stray Kids",
-        "Twice",
-        "Bad Bunny",
-        "Shakira",
-        "Rihanna",
-        "Selena Gomez",
-        "Katy Perry",
-        "Lady Gaga",
-        "Shawn Mendes",
-        "Camila Cabello",
-        "Harry Styles",
-        "Olivia Rodrigo",
-        "Doja Cat",
-        "Nicki Minaj",
-        "Travis Scott",
-        "Kendrick Lamar",
-        "J. Cole",
-        "Anuv Jain",
-        "Prateek Kuhad",
-        "Divine",
-        "Ritviz",
-        "Badshah",
-        "Eminem",
-        "Kanye West",
-        "Sia",
-        "Maroon 5",
-        "Imagine Dragons",
-        "Post Malone",
-        "Halsey",
+        "Divine rapper",
+        "Ritviz singer",
+        "Badshah rapper",
         "Diljit Dosanjh",
         "Honey Singh",
         "AP Dhillon",
@@ -341,7 +338,37 @@ export function MusicProvider({ children }) {
         "Darshan Raval",
         "Neeti Mohan",
         "Sunidhi Chauhan",
-        "Vishal Mishra",
+        "Vishal Mishra singer",
+        "Anuv Jain",
+        "Prateek Kuhad",
+        "Atif Aslam",
+        "Rahat Fateh Ali Khan",
+        "Shaan singer",
+        "Kailash Kher",
+        "Javed Ali",
+        "Sachet Tandon",
+        "Jonita Gandhi",
+        "Dhvani Bhanushali",
+        "Guru Randhawa",
+        "B Praak",
+        "Ammy Virk",
+        "Jassie Gill",
+        "Karan Aujla",
+        "Nusrat Fateh Ali Khan",
+        "Shankar Mahadevan",
+        "Ilaiyaraaja",
+        "Anirudh Ravichander",
+        "Sid Sriram",
+        "Amit Trivedi",
+        "Pritam composer",
+        "Papon singer",
+        "Ankit Tiwari",
+        "Tulsi Kumar",
+        "Palak Muchhal",
+        "Shilpa Rao",
+        "Monali Thakur",
+        "Asees Kaur",
+        "Jasleen Royal",
       ];
 
       const broadArtistResults = await Promise.all(
@@ -439,6 +466,10 @@ export function MusicProvider({ children }) {
         isShuffled,
         toggleRepeat,
         repeatMode,
+        currentAlbumId,
+        currentArtistId,
+        fetchArtistDetails,
+        PlayArtistSongs,
       }}
     >
       {children}

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { MusicContext } from "../context/MusicContext";
-import { Footer } from "../components/Footer";
+import { ArtistPlayButton } from "../components/ArtistPlayButton";
 
 const ArtistGrid = ({ title, artists, navigate }) => {
   if (!artists || artists.length === 0) return null;
@@ -13,15 +13,16 @@ const ArtistGrid = ({ title, artists, navigate }) => {
           <div
             key={artist.id}
             onClick={() => navigate(`/artist/${artist.id}`)}
-            className="flex flex-col items-center cursor-pointer group"
+            className="flex flex-col items-center cursor-pointer group relative" 
           >
-            <div className="w-30 h-30 rounded-full overflow-hidden bg-zinc-800">
+            <div className="relative w-30 h-30 rounded-full overflow-hidden bg-zinc-800">
               <img
                 src={artist.image}
                 className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
               />
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-full" />
             </div>
-            <p className="mt-3 text-sm font-semibold text-text-primary truncate text-center">
+            <p className="mt-3 text-sm font-semibold text-text-primary group-hover:underline truncate text-center">
               {artist.name}
             </p>
           </div>
@@ -45,7 +46,6 @@ export const ArtistsPage = () => {
       <div className="m-auto text-center text-text-secondary text-xl font-semibold font-mono">
         <h2>----- Every note tells a story. -----</h2>
       </div>
-      <Footer />
     </div>
   );
 };
