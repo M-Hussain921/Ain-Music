@@ -45,3 +45,13 @@
   -ms-overflow-style: none; 
   scrollbar-width: none;     
 }
+
+::selection {
+  background: #9CB080;
+  color: #fff;
+}
+
+::-moz-selection {
+  background: #9CB080;
+  color: #fff;
+}

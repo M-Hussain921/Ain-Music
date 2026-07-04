@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
+import { mapRawSongToSongs } from "../utils/mapRawSong";
 
 export const MusicContext = createContext();
 
@@ -18,19 +19,7 @@ async function fetchSongsByQuery(query, limit = 10) {
     const results = data?.data?.results || [];
     if (results.length === 0) return [];
 
-    return results.map((song) => ({
-      id: song.id || null,
-      title: song.name,
-      artist: song.artists?.primary?.[0]?.name || "Unknown Artist",
-      coverArt:
-        song.image?.[2]?.url ||
-        song.image?.[2]?.link ||
-        "https://via.placeholder.com/150",
-      audioUrl:
-        song.downloadUrl?.[song.downloadUrl.length - 1]?.url ||
-        song.downloadUrl?.[song.downloadUrl.length - 1]?.link,
-      duration: song.duration,
-    }));
+    return results.map(mapRawSongToSongs);
   } catch (error) {
     console.warn(`Server failed. error:${error}`);
     return [];
@@ -93,19 +82,7 @@ async function fetchAlbumDetails(id) {
     const album = data?.data;
     if (!album) return null;
 
-    const songs = (album.songs || []).map((song) => ({
-      id: song.id,
-      title: song.name,
-      artist: song.artists?.primary?.[0]?.name || "Unknown Artist",
-      coverArt:
-        song.image?.[2]?.url ||
-        song.image?.[2]?.link ||
-        "https://via.placeholder.com/150",
-      audioUrl:
-        song.downloadUrl?.[song.downloadUrl.length - 1]?.url ||
-        song.downloadUrl?.[song.downloadUrl.length - 1]?.link,
-      duration: song.duration,
-    }));
+    const songs = (album.songs || []).map(mapRawSongToSongs);
     return {
       id: album.id,
       title: album.name,
@@ -228,7 +205,6 @@ export function MusicProvider({ children }) {
     if (queue.length === 0) return;
 
     if (isShuffled) {
-      // restore original
       const index = originalQueue.findIndex(
         (s) => s.id === queue[currentIndex].id,
       );
