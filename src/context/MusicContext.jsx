@@ -33,6 +33,7 @@ async function fetchSongsByQuery(query, limit = 10) {
     }));
   } catch (error) {
     console.warn(`Server failed. error:${error}`);
+    return [];
   }
 }
 
@@ -55,6 +56,7 @@ async function fetchArtistByQuery(query, limit = 10) {
     }));
   } catch (error) {
     console.warn(`Server failed. error:${error}`);
+    return [];
   }
 }
 
@@ -72,7 +74,7 @@ async function fetchAlbumsByQuery(query, limit = 10) {
     return results.map((album) => ({
       id: album.id,
       title: album.name,
-      artist:album.artists.primary[0].name|| "Unknown",
+      artist: album.artists.primary[0].name || "Unknown",
       image: album.image?.[2]?.url || "https://via.placeholder.com/150",
       year: album.year,
     }));
@@ -117,6 +119,20 @@ async function fetchAlbumDetails(id) {
   }
 }
 
+async function fetchArtistDetails(id) {
+  try {
+    const res = await fetch(`${SAAVN_API}/artists?id=${id}`);
+    if (!res.ok) throw new Error("Server down");
+
+    const data = await res.json();
+    const artist = data?.data;
+    if (!artist) return null;
+  } catch (err) {
+    console.warn("Artist details fetch error:", err);
+    return null;
+  }
+}
+
 export function MusicProvider({ children }) {
   const [homeContent, setHomeContent] = useState({
     weeklyTop: [],
@@ -124,7 +140,7 @@ export function MusicProvider({ children }) {
     popularArtist: [],
     topAlbums: [],
     trendingAlbums: [],
-    newReleaseAlbums: [], 
+    newReleaseAlbums: [],
   });
   const [searchResults, setSearchResults] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -146,42 +162,42 @@ export function MusicProvider({ children }) {
 
   const [currentAlbumId, setCurrentAlbumId] = useState(null);
 
-const playSong = (song, songList = queue) => {
-  const index = songList.findIndex((s) => s.id === song.id);
-  if (index === -1) {
-    setQueue([song]);
-    setOriginalQueue([song]);
-    setCurrentIndex(0);
-  } else {
-    setQueue(songList);
-    setOriginalQueue(songList);
-    setCurrentIndex(index);
-  }
-   setCurrentAlbumId(null);
-  setIsPlaying(true);
-};
+  const playSong = (song, songList = queue) => {
+    const index = songList.findIndex((s) => s.id === song.id);
+    if (index === -1) {
+      setQueue([song]);
+      setOriginalQueue([song]);
+      setCurrentIndex(0);
+    } else {
+      setQueue(songList);
+      setOriginalQueue(songList);
+      setCurrentIndex(index);
+    }
+    setCurrentAlbumId(null);
+    setIsPlaying(true);
+  };
 
   const togglePlayPause = () => {
     setIsPlaying((prev) => !prev);
   };
 
   const toggleRepeat = () => {
-  setRepeatMode(prev => {
-    if (prev === "off") return "all";
-    if (prev === "all") return "one";
-    return "off";
-  });
-};
+    setRepeatMode((prev) => {
+      if (prev === "off") return "all";
+      if (prev === "all") return "one";
+      return "off";
+    });
+  };
 
   const playAlbum = (songs, startIndex = 0, albumId = null) => {
-  if (!songs || songs.length === 0) return;
+    if (!songs || songs.length === 0) return;
 
-  setQueue(songs);
-  setOriginalQueue(songs);
-  setCurrentIndex(startIndex);
-  setCurrentAlbumId(albumId);
-  setIsPlaying(true);
-};
+    setQueue(songs);
+    setOriginalQueue(songs);
+    setCurrentIndex(startIndex);
+    setCurrentAlbumId(albumId);
+    setIsPlaying(true);
+  };
 
   const playNext = () => {
     if (repeatMode === "one") {
@@ -190,24 +206,24 @@ const playSong = (song, songList = queue) => {
 
     setHistory((prev) => [...prev, queue[currentIndex]]);
 
-   if (currentIndex < queue.length - 1) {
-  setCurrentIndex(prev => prev + 1);
-} else {
-  if (repeatMode === "all") {
-    setCurrentIndex(0);
-  } else {
-    setIsPlaying(false); 
-  }
-}
+    if (currentIndex < queue.length - 1) {
+      setCurrentIndex((prev) => prev + 1);
+    } else {
+      if (repeatMode === "all") {
+        setCurrentIndex(0);
+      } else {
+        setIsPlaying(false);
+      }
+    }
   };
 
- const playPrevious = () => {
-  if (currentIndex > 0) {
-    setCurrentIndex((prev) => prev - 1);
-  } else if (repeatMode === "all") {
-    setCurrentIndex(queue.length - 1);
-  }
-};
+  const playPrevious = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prev) => prev - 1);
+    } else if (repeatMode === "all") {
+      setCurrentIndex(queue.length - 1);
+    }
+  };
   const shuffleQueue = () => {
     if (queue.length === 0) return;
 
@@ -245,12 +261,13 @@ const playSong = (song, songList = queue) => {
 
   const loadHomePageContent = async () => {
     try {
-      const [weeklyTop, newReleases, trendingAlbums, newReleaseAlbums] = await Promise.all([
-        fetchSongsByQuery("trending bollywood", 12),
-        fetchSongsByQuery("New bollywood", 12),
-        fetchAlbumsByQuery("trending bollywood", 15),   
-      fetchAlbumsByQuery("new bollywood", 15),
-      ]);
+      const [weeklyTop, newReleases, trendingAlbums, newReleaseAlbums] =
+        await Promise.all([
+          fetchSongsByQuery("trending bollywood", 12),
+          fetchSongsByQuery("New bollywood", 12),
+          fetchAlbumsByQuery("trending bollywood", 15),
+          fetchAlbumsByQuery("new bollywood", 15),
+        ]);
 
       const internationalArtists = [
         "Taylor Swift",
@@ -286,13 +303,89 @@ const playSong = (song, songList = queue) => {
         new Map(topAlbums.map((a) => [a.id, a])).values(),
       );
 
+      const broadArtistQueries = [
+        "Taylor Swift",
+        "Ed Sheeran",
+        "Drake",
+        "Billie Eilish",
+        "The Weeknd",
+        "Justin Bieber",
+        "Ariana Grande",
+        "Bruno Mars",
+        "Dua Lipa",
+        "Coldplay",
+        "Arijit Singh",
+        "Shreya Ghoshal",
+        "Sonu Nigam",
+        "Armaan Malik",
+        "Neha Kakkar",
+        "A.R. Rahman",
+        "Jubin Nautiyal",
+        "KK",
+        "Mohit Chauhan",
+        "BTS",
+        "Jungkook",
+        "Blackpink",
+        "Jennie",
+        "Lisa",
+        "EXO",
+        "Stray Kids",
+        "Twice",
+        "Bad Bunny",
+        "Shakira",
+        "Rihanna",
+        "Selena Gomez",
+        "Katy Perry",
+        "Lady Gaga",
+        "Shawn Mendes",
+        "Camila Cabello",
+        "Harry Styles",
+        "Olivia Rodrigo",
+        "Doja Cat",
+        "Nicki Minaj",
+        "Travis Scott",
+        "Kendrick Lamar",
+        "J. Cole",
+        "Anuv Jain",
+        "Prateek Kuhad",
+        "Divine",
+        "Ritviz",
+        "Badshah",
+        "Eminem",
+        "Kanye West",
+        "Sia",
+        "Maroon 5",
+        "Imagine Dragons",
+        "Post Malone",
+        "Halsey",
+        "Diljit Dosanjh",
+        "Honey Singh",
+        "AP Dhillon",
+        "Sidhu Moosewala",
+        "Darshan Raval",
+        "Neeti Mohan",
+        "Sunidhi Chauhan",
+        "Vishal Mishra",
+      ];
+
+      const broadArtistResults = await Promise.all(
+        broadArtistQueries.map((q) => fetchArtistByQuery(q, 1)),
+      );
+
+      const allArtistsFlat = broadArtistResults.flat();
+
+      const uniqueAllArtists = Array.from(
+        new Map(allArtistsFlat.map((a) => [a.id, a])).values(),
+      );
+
       setHomeContent({
         weeklyTop,
         newReleases,
         popularArtist,
         topAlbums: uniqueAlbums,
-        trendingAlbums,              
-      newReleaseAlbums,
+        trendingAlbums,
+        newReleaseAlbums,
+        allArtists: uniqueAllArtists,
       });
     } catch (error) {
       console.error("Home content fetching error", error);
