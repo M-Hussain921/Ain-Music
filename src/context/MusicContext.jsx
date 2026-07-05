@@ -145,7 +145,11 @@ export function MusicProvider({ children }) {
     trendingAlbums: [],
     newReleaseAlbums: [],
   });
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState({
+    songs: [],
+    artists: [],
+    playlists: [],
+  });
   const [isPlaying, setIsPlaying] = useState(false);
 
   const [favorites, setFavorites] = useState([]);
@@ -396,17 +400,21 @@ export function MusicProvider({ children }) {
   };
 
   const searchMusic = async (query) => {
-    if (!query.trim()) {
-      setSearchResults([]);
-      return;
-    }
-    try {
-      const results = await fetchSongsByQuery(query, 20);
-      setSearchResults(results);
-    } catch (error) {
-      console.error("Search error", error);
-    }
-  };
+  if (!query.trim()) {
+    setSearchResults({ songs: [], artists: [], playlists: [] });
+    return;
+  }
+  try {
+    const [songs, artists, playlists] = await Promise.all([
+      fetchSongsByQuery(query, 8),
+      fetchArtistByQuery(query, 4),
+      fetchAlbumsByQuery(query, 4),   
+    ]);
+    setSearchResults({ songs, artists, playlists });
+  } catch (error) {
+    console.error("Search error", error);
+  }
+};
 
   const toggleFavorite = (track) => {
     setFavorites((prevFavs) => {
