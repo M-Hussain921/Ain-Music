@@ -11,5 +11,6 @@ export const mapRawSongToSongs = (song) => {
       song.downloadUrl?.[song.downloadUrl.length - 1]?.url ||
       song.downloadUrl?.[song.downloadUrl.length - 1]?.link,
     duration: song.duration,
+    albumId:song.album?.id||null,
   };
 };
