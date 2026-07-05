@@ -1,15 +1,23 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { FiSearch, FiUser } from "react-icons/fi";
+import { FiSearch, FiUser, FiMenu } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { MusicContext } from "../context/MusicContext";
 import { useClickOutside } from "../hooks/useClickOutside.js";
 import { useDebounce } from "../hooks/useDebounce.js";
 
-export const Navbar = () => {
+export const Navbar = ({ onMenuClick }) => {
   const [input, setInput] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { searchResults, searchMusic, playSong,fetchArtistDetails,PlayArtistSongs } = useContext(MusicContext);
+  const {
+    searchResults,
+    searchMusic,
+    playSong,
+    fetchArtistDetails,
+    fetchAlbumDetails,
+    playAlbum,
+    playArtistSongs,
+  } = useContext(MusicContext);
   const [loadingKey, setLoadingKey] = useState(null);
 
   const navigate = useNavigate();
@@ -26,7 +34,10 @@ export const Navbar = () => {
     setDropdownOpen(true);
   }, [debouncedInput]);
 
-  useClickOutside(containerRef, () =>{ setDropdownOpen(false),setInput("")});
+  useClickOutside(containerRef, () => {
+    setDropdownOpen(false);
+    setInput("");
+  });
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -34,7 +45,7 @@ export const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-   const closeDropdown = () => {
+  const closeDropdown = () => {
     setDropdownOpen(false);
     setInput("");
   };
@@ -43,10 +54,10 @@ export const Navbar = () => {
     playSong(song, searchResults.songs);
     closeDropdown();
     if (song.albumId) {
-    navigate(`/album/${song.albumId}`);
-  } else if (song.artistId) {
-    navigate(`/artist/${song.artistId}`);  
-  }
+      navigate(`/album/${song.albumId}`);
+    } else if (song.artistId) {
+      navigate(`/artist/${song.artistId}`);
+    }
   };
 
   const handleArtistClick = async (artist) => {
@@ -55,13 +66,13 @@ export const Navbar = () => {
     setLoadingKey(null);
 
     if (details?.topSongs?.length) {
-      PlayArtistSongs(details.topSongs, artist.id);
+      playArtistSongs(details.topSongs, artist.id);
     }
     closeDropdown();
     navigate(`/artist/${artist.id}`);
   };
 
-   const handlePlaylistClick = async (playlist) => {
+  const handlePlaylistClick = async (playlist) => {
     setLoadingKey(`playlist-${playlist.id}`);
     const details = await fetchAlbumDetails(playlist.id);
     setLoadingKey(null);
@@ -87,11 +98,25 @@ export const Navbar = () => {
   return (
     <header
       className={`w-full px-8 py-1.5 flex items-center justify-between sticky pointer-events-auto top-0 left-0 z-[999] transition-all border-b border-brand-light/40 ${
-        scrolled ? "bg-surface backdrop-blur-3xl" : "bg-transparent backdrop-blur-3xl"
+        scrolled
+          ? "bg-surface backdrop-blur-3xl"
+          : "bg-transparent backdrop-blur-3xl"
       }`}
     >
-      <div className="flex items-center justify-between w-full">
-        <form onSubmit={handleSubmit} ref={containerRef} className="relative w-96 group">
+      <div className="flex items-center justify-between w-full gap-3">
+        <button
+          onClick={() => {
+            onMenuClick();
+          }}
+          className="lg:hidden text-text-primary text-2xl shrink-0"
+        >
+          <FiMenu />
+        </button>
+        <form
+          onSubmit={handleSubmit}
+          ref={containerRef}
+          className="relative w-full max-w-80 group"
+        >
           <input
             type="text"
             placeholder="Search for artists, songs, or albums..."
@@ -108,69 +133,90 @@ export const Navbar = () => {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute top-full mt-2 w-full bg-surface border border-brand-light/40 rounded-xl shadow-xl max-h-96 overflow-y-auto z-10">
-              {!hasAnyResults ? (
-                <p className="px-4 py-3 text-sm text-text-secondary">No results found.</p>
-              ) : (
+            <div className="absolute top-full mt-2 w-full bg-surface border border-brand-light/40 rounded-xl shadow-xl max-h-96 overflow-y-auto z-[1200]">
+              {!hasAnyResults && (
+                <p className="px-4 py-3 text-sm text-text-secondary">
+                  No results found.
+                </p>
+              )}
+              {searchResults.songs.length > 0 &&
                 searchResults.songs.map((song) => (
                   <div
                     key={song.id}
                     onClick={() => handleSongClick(song)}
                     className="flex items-center gap-3 px-4 py-2 hover:bg-brand-light/20 cursor-pointer"
                   >
-                    <img src={song.coverArt} className="w-9 h-9 rounded object-cover" />
+                    <img
+                      src={song.coverArt}
+                      className="w-9 h-9 rounded object-cover"
+                    />
                     <div className="min-w-0">
-                      <p className="text-sm text-text-primary truncate">{song.title}</p>
-                      <p className="text-xs text-text-secondary truncate">{song.artist}</p>
+                      <p className="text-sm text-text-primary truncate">
+                        {song.title}
+                      </p>
+                      <p className="text-xs text-text-secondary truncate">
+                        {song.artist}
+                      </p>
                     </div>
                   </div>
-                ))
-              )}
+                ))}
               {searchResults.artists.length > 0 && (
                 <div>
-                  <p className="px-4 pt-3 pb-1 text-xs font-semibold text-text-secondary uppercase">Artists</p>
+                  <p className="px-4 pt-3 pb-1 text-xs font-semibold text-text-secondary uppercase">
+                    Artists
+                  </p>
                   {searchResults.artists.map((artist) => (
                     <div
                       key={artist.id}
                       onClick={() => handleArtistClick(artist)}
                       className="flex items-center gap-3 px-4 py-2 hover:bg-brand-light/20 cursor-pointer"
                     >
-                      <img src={artist.image} className="w-9 h-9 rounded-full object-cover" />
-                      <p className="text-sm text-text-primary truncate">{artist.name}</p>
+                      <img
+                        src={artist.image}
+                        className="w-9 h-9 rounded-full object-cover"
+                      />
+                      <p className="text-sm text-text-primary truncate">
+                        {artist.name}
+                      </p>
                       {loadingKey === `artist-${artist.id}` && (
-                        <span className="text-xs text-text-secondary ml-auto">Loading...</span>
+                        <span className="text-xs text-text-secondary ml-auto">
+                          Loading...
+                        </span>
                       )}
                     </div>
                   ))}
                 </div>
               )}
-               {searchResults.playlists.length > 0 && (
+              {searchResults.playlists.length > 0 && (
                 <div>
-                  <p className="px-4 pt-3 pb-1 text-xs font-semibold text-text-secondary uppercase">Playlists</p>
+                  <p className="px-4 pt-3 pb-1 text-xs font-semibold text-text-secondary uppercase">
+                    Playlists
+                  </p>
                   {searchResults.playlists.map((playlist) => (
                     <div
                       key={playlist.id}
                       onClick={() => handlePlaylistClick(playlist)}
                       className="flex items-center gap-3 px-4 py-2 hover:bg-brand-light/20 cursor-pointer"
                     >
-                      <img src={playlist.image} className="w-9 h-9 rounded object-cover" />
-                      <p className="text-sm text-text-primary truncate">{playlist.title}</p>
+                      <img
+                        src={playlist.image}
+                        className="w-9 h-9 rounded object-cover"
+                      />
+                      <p className="text-sm text-text-primary truncate">
+                        {playlist.title}
+                      </p>
                       {loadingKey === `playlist-${playlist.id}` && (
-                        <span className="text-xs text-text-secondary ml-auto">Loading...</span>
+                        <span className="text-xs text-text-secondary ml-auto">
+                          Loading...
+                        </span>
                       )}
                     </div>
                   ))}
                 </div>
               )}
-
             </div>
           )}
-
-          
-
-             
         </form>
-
         <div className="flex items-center space-x-4">
           <button
             onClick={() => alert(" Backend not ready now! 🔒")}

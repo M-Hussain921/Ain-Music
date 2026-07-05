@@ -209,7 +209,7 @@ export function MusicProvider({ children }) {
     setIsPlaying(true);
   };
 
-  const PlayArtistSongs = (songs, startIndex = 0, artistId = null) => {
+  const playArtistSongs = (songs, startIndex = 0, artistId = null) => {
     if (!songs || songs.length === 0) return;
     setQueue(songs);
     setOriginalQueue(songs);
@@ -477,7 +477,7 @@ export function MusicProvider({ children }) {
         currentAlbumId,
         currentArtistId,
         fetchArtistDetails,
-        PlayArtistSongs,
+        playArtistSongs,
       }}
     >
       {children}
