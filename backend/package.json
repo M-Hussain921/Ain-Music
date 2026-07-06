@@ -1,0 +1,22 @@
+{
+  "name": "ain-music-backend",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Mohammed Hussain",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.7.3",
+    "redis": "^6.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
