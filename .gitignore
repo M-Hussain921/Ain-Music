@@ -6,6 +6,7 @@ frontend/.env
 backend/.env
 dist/
 frontend/dist/
+backend/twiliotst.js
 
 # Logs
 logs
