@@ -6,10 +6,48 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      trim
+      trim: true,
     },
-    likedSongs:[{type:Object}],
-    likedPlaylist:[{type:Object}],
+    likedSongs: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+    likedPlaylist: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+    myPlaylist: [
+      {
+        title: {
+          type: String,
+          trim: true,
+        },
+        songs: [
+          {
+            type: String,
+            trim: true,
+          },
+        ],
+      },
+    ],
+    recentlyPlayed: [
+      {
+        songId: {
+          type: String,
+          trim: true,
+        },
+        playedAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   { timestamps: true },
 );
+
+export default mongoose.model('User', userSchema);
