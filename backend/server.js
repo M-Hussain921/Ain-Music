@@ -4,8 +4,12 @@ import express from "express";
 import { connectRedis } from "./config/redisClient.js";
 import { connectMongo } from "./config/mongoClient.js";
 
+import authRoutes from "./routes/auth.routes.js";
+
 const app = express();
 app.use(express.json());
+
+app.use("/api/auth", authRoutes);
 
 const startServer = async () => {
   await connectMongo();
