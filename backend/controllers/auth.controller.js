@@ -38,3 +38,45 @@ export const sendOTP = async (req, res) => {
     res.status(500).json({ message: "Failed to send OTP" });
   }
 };
+
+export const otpVerify = async (req, res) => {
+  const { phoneNumber, OTP } = req.body;
+
+  if (!phoneNumber)
+    return res.status(400).json({
+      message: "Phone Number is required",
+    });
+
+  if (!OTP)
+    return res.status(400).json({
+      message: "OTP is required",
+    });
+
+  try {
+    const validOTP = await redisClient.get(`otp:${phoneNumber}`);
+
+    if (!validOTP) return res.status(400).json({ message: "OTP expried" });
+
+    if (validOTP !== OTP) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    await redisClient.del(`otp:${phoneNumber}`);
+
+    const user = await users.findOneAndUpdate(
+  { phoneNumber },
+  { phoneNumber },
+  { upsert: true, new: true }
+);
+
+    const token =jwt.sign(
+        {phoneNumber:req.body.phoneNumber},
+        process.env.JWT_TOKEN,
+        { expiresIn: "30d" }
+    )
+    return res.status(200).json({ message: "OTP verified",token,user });
+  } catch (error) {
+    console.error("OTP verifying error:", error);
+    res.status(500).json({ message: "OTP not verifed" });
+  }
+};
