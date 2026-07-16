@@ -1,4 +1,5 @@
 import users from "../models/user.js";
+import playlists from "../models/playlist.js";
 import { toggleLike } from "../utils/toggleLike.js";
 
 export const likedSongs = async (req, res) => {
@@ -36,7 +37,10 @@ export const likedPlaylist = async (req, res) => {
     const user = await users.findById(req.user.userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const { updatedArray, exists } = toggleLike(user.likedPlaylists, playlistId);
+    const { updatedArray, exists } = toggleLike(
+      user.likedPlaylists,
+      playlistId,
+    );
     user.likedPlaylists = updatedArray;
 
     await user.save();
@@ -77,6 +81,37 @@ export const likedArtists = async (req, res) => {
     });
   } catch (error) {
     console.error("server error: ", error);
+    res.status(500).json({ message: "server error" });
+  }
+};
+
+export const createPlaylist = async (req, res) => {
+  const { name } = req.body;
+  if (!name)
+    return res.status(400).json({ success: false, message: "name is require" });
+
+  try {
+    const user = await users.findById(req.user.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const playlist = await playlists.findOne({name});
+    if (playlist)
+      return res.status(400).json({ message: "playlist already exist" });
+
+    const newPlaylist = await playlists.create({
+      name,
+      user,
+    });
+
+    res
+      .status(201)
+      .json({
+        success: true,
+        message: "Playlist created successfull",
+        data: newPlaylist,
+      });
+  } catch (error) {
+     console.error("server error: ", error);
     res.status(500).json({ message: "server error" });
   }
 };

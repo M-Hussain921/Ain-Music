@@ -26,20 +26,6 @@ const userSchema = new mongoose.Schema(
         trim: true,
       },
     ],
-    myPlaylist: [
-      {
-        title: {
-          type: String,
-          trim: true,
-        },
-        songs: [
-          {
-            type: String,
-            trim: true,
-          },
-        ],
-      },
-    ],
     recentlyPlayed: [
       {
         songId: {
