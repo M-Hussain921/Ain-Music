@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema(
         trim: true,
       },
     ],
-    likedPlaylist: [
+    likedPlaylists: [
       {
         type: String,
         trim: true,
