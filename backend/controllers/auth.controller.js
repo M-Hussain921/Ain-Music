@@ -64,17 +64,17 @@ export const otpVerify = async (req, res) => {
     await redisClient.del(`otp:${phoneNumber}`);
 
     const user = await users.findOneAndUpdate(
-  { phoneNumber },
-  { phoneNumber },
-  { upsert: true, new: true }
-);
+      { phoneNumber },
+      { phoneNumber },
+      { upsert: true, new: true },
+    );
 
-    const token =jwt.sign(
-        {phoneNumber:req.body.phoneNumber},
-        process.env.JWT_TOKEN,
-        { expiresIn: "30d" }
-    )
-    return res.status(200).json({ message: "OTP verified",token,user });
+    const token = jwt.sign(
+      { phoneNumber: req.body.phoneNumber, userId: user._id },
+      process.env.JWT_TOKEN,
+      { expiresIn: "30d" },
+    );
+    return res.status(200).json({ message: "OTP verified", token, user });
   } catch (error) {
     console.error("OTP verifying error:", error);
     res.status(500).json({ message: "OTP not verifed" });

@@ -97,7 +97,7 @@ export const Navbar = ({ onMenuClick }) => {
 
   return (
     <header
-      className={`w-full px-8 py-1.5 flex items-center justify-between sticky pointer-events-auto top-0 left-0 z-[999] transition-all border-b border-brand-light/40 ${
+      className={`w-full px-8 py-1.5 flex items-center justify-between sticky pointer-events-auto top-0 left-0 z-999 transition-all border-b border-brand-light/40 ${
         scrolled
           ? "bg-surface backdrop-blur-3xl"
           : "bg-transparent backdrop-blur-3xl"
@@ -133,7 +133,7 @@ export const Navbar = ({ onMenuClick }) => {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute top-full mt-2 w-full bg-surface border border-brand-light/40 rounded-xl shadow-xl max-h-96 overflow-y-auto z-[1200]">
+            <div className="absolute top-full mt-2 w-full bg-surface border border-brand-light/40 rounded-xl shadow-xl max-h-96 overflow-y-auto z-1200">
               {!hasAnyResults && (
                 <p className="px-4 py-3 text-sm text-text-secondary">
                   No results found.

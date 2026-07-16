@@ -18,6 +18,7 @@ async function fetchSongsByQuery(query, limit = 10) {
     const data = await res.json();
     const results = data?.data?.results || [];
     if (results.length === 0) return [];
+    console.log(results)
 
     return results.map(mapRawSongToSongs);
   } catch (error) {
