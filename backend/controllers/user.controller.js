@@ -53,3 +53,30 @@ export const likedPlaylist = async (req, res) => {
     res.status(500).json({ message: "server error" });
   }
 };
+
+export const likedArtists = async (req, res) => {
+  const { artistId } = req.body;
+  if (!artistId)
+    return res.status(400).json({ message: "artist Id is missing" });
+
+  try {
+    const user = await users.findById(req.user.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const { updatedArray, exists } = toggleLike(user.likedArtists, artistId);
+    user.likedArtists = updatedArray;
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      liked: !exists,
+      message: !exists
+        ? "Artist added successfully"
+        : "Artist removed successfully",
+    });
+  } catch (error) {
+    console.error("server error: ", error);
+    res.status(500).json({ message: "server error" });
+  }
+};
