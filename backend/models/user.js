@@ -20,6 +20,12 @@ const userSchema = new mongoose.Schema(
         trim: true,
       },
     ],
+    likedArtists:[
+       {
+        type: String,
+        trim: true,
+      },
+    ],
     myPlaylist: [
       {
         title: {
