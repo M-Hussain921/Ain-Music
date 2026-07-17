@@ -18,6 +18,6 @@ router.post("/liked-artist", authMiddleware, likedArtists);
 router.post("/create-playlist", authMiddleware, createPlaylist);
 router.post("/my-playlist", authMiddleware, addAndRemoveSongsToPlaylist);
 
-router.post("recently-played-songs",authMiddleware,trackRecentlyPlayed);
+router.post("/recently-played-songs",authMiddleware,trackRecentlyPlayed);
 
 export default router;

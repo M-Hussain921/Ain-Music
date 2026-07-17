@@ -151,7 +151,7 @@ export const addAndRemoveSongsToPlaylist = async (req, res) => {
 };
 
 export const trackRecentlyPlayed = async (req, res) => {
-  const { songId } = req.body;
+  const { songId, artistId, playlistId } = req.body;
   if (!songId) return res.status(400).json({ message: "Song Id is missing" });
 
   try {
@@ -163,6 +163,19 @@ export const trackRecentlyPlayed = async (req, res) => {
     );
     user.recentlyPlayed.unshift({ songId, playedAt: new Date() });
     user.recentlyPlayed = user.recentlyPlayed.slice(0, 50);
+
+    const currSongCount = user.songPlayCounts.get(songId) || 0;
+    user.songPlayCounts.set(songId, currSongCount + 1);
+
+    if (artistId) {
+      const currArtistCount = user.artistPlayCounts.get(songId) || 0;
+      user.artistPlayCounts.set(songId, currArtistCount + 1);
+    }
+
+    if (playlistId) {
+      const currPlaylistCount = user.playlistPlayCounts.get(songId) || 0;
+      user.playlistPlayCounts.set(songId, currPlaylistCount + 1);
+    }
 
     await user.save();
 
