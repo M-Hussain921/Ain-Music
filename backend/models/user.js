@@ -20,8 +20,8 @@ const userSchema = new mongoose.Schema(
         trim: true,
       },
     ],
-    likedArtists:[
-       {
+    likedArtists: [
+      {
         type: String,
         trim: true,
       },
@@ -38,8 +38,23 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
+    songPlayCounts: {
+      type: Map,
+      of: Number,
+      default: {},
+    },
+    artistPlayCounts: {
+      type: Map,
+      of: Number,
+      default: {},
+    },
+    playlistPlayCounts: {
+      type: Map,
+      of: Number,
+      default: {},
+    },
   },
   { timestamps: true },
 );
 
-export default mongoose.model('User', userSchema);
+export default mongoose.model("User", userSchema);
