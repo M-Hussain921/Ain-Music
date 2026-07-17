@@ -2,6 +2,34 @@ import users from "../models/user.js";
 import playlists from "../models/playlist.js";
 import { toggleLike } from "../utils/toggleLike.js";
 
+const getUserField = (fieldName) => async (req, res) => {
+  try {
+    const user = await users.findById(req.user.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json({ success: true, data: user[fieldName] });
+  } catch (error) {
+    console.error("server error: ", error);
+    res.status(500).json({ message: "server error" });
+  }
+};
+
+const getMostPlayedField = (fieldName) => async (req, res) => {
+  try {
+    const user = await users.findById(req.user.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const mostPlayed = [...user[fieldName].entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 20)
+      .map(([id, count]) => ({ id, count }));
+
+    res.status(200).json({ success: true, data: mostPlayed });
+  } catch (error) {
+    console.error("server error: ", error);
+    res.status(500).json({ message: "server error" });
+  }
+};
+
 export const likedSongs = async (req, res) => {
   const { songId } = req.body;
   if (!songId) return res.status(400).json({ message: "Song Id is missing" });
@@ -27,6 +55,8 @@ export const likedSongs = async (req, res) => {
     res.status(500).json({ message: "server error" });
   }
 };
+
+export const getLikedSongs = getUserField("likedSongs");
 
 export const likedPlaylist = async (req, res) => {
   const { playlistId } = req.body;
@@ -58,6 +88,8 @@ export const likedPlaylist = async (req, res) => {
   }
 };
 
+export const getLikedPlaylists = getUserField("likedPlaylists");
+
 export const likedArtists = async (req, res) => {
   const { artistId } = req.body;
   if (!artistId)
@@ -84,6 +116,8 @@ export const likedArtists = async (req, res) => {
     res.status(500).json({ message: "server error" });
   }
 };
+
+export const getLikedArtists = getUserField("likedArtists");
 
 export const createPlaylist = async (req, res) => {
   const { name } = req.body;
@@ -150,6 +184,21 @@ export const addAndRemoveSongsToPlaylist = async (req, res) => {
   }
 };
 
+export const getMyPlaylists = async (req, res) => {
+  try {
+    const myPlaylists = await playlists.find({ user: req.user.userId });
+    if (!myPlaylists)
+      return res
+        .status(404)
+        .json({ success: false, message: "playlists not found", data: null });
+
+    res.status(200).json({ success: true, data: myPlaylists });
+  } catch (error) {
+    console.error("server error: ", error);
+    res.status(500).json({ message: "server error" });
+  }
+};
+
 export const trackRecentlyPlayed = async (req, res) => {
   const { songId, artistId, playlistId } = req.body;
   if (!songId) return res.status(400).json({ message: "Song Id is missing" });
@@ -189,3 +238,9 @@ export const trackRecentlyPlayed = async (req, res) => {
     res.status(500).json({ message: "server error" });
   }
 };
+
+export const getRecentlyPlayed = getUserField("recentlyPlayed");
+
+export const getMostPlayedSongs = getMostPlayedField("songPlayCounts");
+export const getMostPlayedArtists = getMostPlayedField("artistPlayCounts");
+export const getMostPlayedPlaylists = getMostPlayedField("playlistPlayCounts");
