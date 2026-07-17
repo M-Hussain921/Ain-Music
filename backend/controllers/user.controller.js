@@ -94,24 +94,58 @@ export const createPlaylist = async (req, res) => {
     const user = await users.findById(req.user.userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const playlist = await playlists.findOne({name});
-    if (playlist)
-      return res.status(400).json({ message: "playlist already exist" });
-
     const newPlaylist = await playlists.create({
       name,
-      user,
+      user: user._id,
     });
 
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "Playlist created successfull",
-        data: newPlaylist,
-      });
+    res.status(201).json({
+      success: true,
+      message: "Playlist created successfull",
+      data: newPlaylist,
+    });
   } catch (error) {
-     console.error("server error: ", error);
+    console.error("server error: ", error);
+    res.status(500).json({ message: "server error" });
+  }
+};
+
+export const addAndRemoveSongsToPlaylist = async (req, res) => {
+  const { playlistId, songId } = req.body;
+  if (!playlistId)
+    return res.status(400).json({ message: "Playlist Id is missing" });
+  if (!songId) return res.status(400).json({ message: "Song Id is missing" });
+
+  try {
+    const user = await users.findById(req.user.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const playlist = await playlists.findById(playlistId);
+
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist not found" });
+    }
+
+    if (playlist.user.toString() !== req.user.userId) {
+      return res
+        .status(403)
+        .json({ message: "You don't have permission to modify this playlist" });
+    }
+
+    const { updatedArray, exists } = toggleLike(playlist.songs, songId);
+    playlist.songs = updatedArray;
+
+    await playlist.save();
+
+    res.status(200).json({
+      success: true,
+      liked: !exists,
+      message: !exists
+        ? "Song added successfully"
+        : "Song removed successfully",
+    });
+  } catch (error) {
+    console.error("server error: ", error);
     res.status(500).json({ message: "server error" });
   }
 };
