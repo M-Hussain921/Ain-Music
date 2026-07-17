@@ -169,12 +169,12 @@ export const trackRecentlyPlayed = async (req, res) => {
 
     if (artistId) {
       const currArtistCount = user.artistPlayCounts.get(artistId) || 0;
-      user.artistPlayCounts.set(songId, currArtistCount + 1);
+      user.artistPlayCounts.set(artistId, currArtistCount + 1);
     }
 
     if (playlistId) {
       const currPlaylistCount = user.playlistPlayCounts.get(playlistId) || 0;
-      user.playlistPlayCounts.set(songId, currPlaylistCount + 1);
+      user.playlistPlayCounts.set(playlistId, currPlaylistCount + 1);
     }
 
     await user.save();
