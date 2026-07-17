@@ -149,3 +149,30 @@ export const addAndRemoveSongsToPlaylist = async (req, res) => {
     res.status(500).json({ message: "server error" });
   }
 };
+
+export const trackRecentlyPlayed = async (req, res) => {
+  const { songId } = req.body;
+  if (!songId) return res.status(400).json({ message: "Song Id is missing" });
+
+  try {
+    const user = await users.findById(req.user.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.recentlyPlayed = user.recentlyPlayed.filter(
+      (entry) => entry.songId !== songId,
+    );
+    user.recentlyPlayed.unshift({ songId, playedAt: new Date() });
+    user.recentlyPlayed = user.recentlyPlayed.slice(0, 50);
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "song tracks successfull",
+      data: user.recentlyPlayed,
+    });
+  } catch (error) {
+    console.error("server error: ", error);
+    res.status(500).json({ message: "server error" });
+  }
+};

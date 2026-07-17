@@ -6,6 +6,7 @@ import {
   likedArtists,
   createPlaylist,
   addAndRemoveSongsToPlaylist,
+  trackRecentlyPlayed
 } from "../controllers/user.controller.js";
 
 const router = express.Router();
@@ -16,5 +17,7 @@ router.post("/liked-artist", authMiddleware, likedArtists);
 
 router.post("/create-playlist", authMiddleware, createPlaylist);
 router.post("/my-playlist", authMiddleware, addAndRemoveSongsToPlaylist);
+
+router.post("recently-played-songs",authMiddleware,trackRecentlyPlayed);
 
 export default router;
