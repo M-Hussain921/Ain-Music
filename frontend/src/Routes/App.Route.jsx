@@ -1,8 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { Navbar } from "../components/Navbar.jsx";
 import { Sidebar } from "../components/Sidebar.jsx";
-import { SignIn } from "../pages/SignInPage.jsx";
-import { SignUpPage } from "../pages/SignUpPage.jsx";
 import { AddPlaylist } from "../pages/AddPlaylist.jsx";
 import { AlbumDetailPage } from "../components/AlbumDetailPage.jsx";
 import {  ArtistsPage } from "../pages/ArtistsPage.jsx";

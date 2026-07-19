@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { createPortal } from "react-dom";
 
 export const AuthForm = ({ onClose }) => {
   const { sendOTP, verifyOTP, loading, error } = useContext(AuthContext);
@@ -26,8 +27,8 @@ export const AuthForm = ({ onClose }) => {
     }
   };
 
-  return (
-     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-2000">
+  return createPortal(
+     <div className="fixed inset-0  bg-black/60 flex items-center justify-center z-2000">
       <div className="bg-surface p-6 rounded-xl w-96 border border-brand-light/40">
         <h2 className="text-xl font-bold text-text-primary mb-4">
           {step === "phone" ? "Login" : "Enter OTP"}
@@ -77,6 +78,7 @@ export const AuthForm = ({ onClose }) => {
           Cancel
         </button>
       </div>
-    </div>
+    </div>,
+     document.body
   );
 };
