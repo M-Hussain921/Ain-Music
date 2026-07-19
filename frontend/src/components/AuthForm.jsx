@@ -1,74 +1,82 @@
-import {useState} from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
-export const AuthForm = ({ isLogin, setIsLogin }) => {
-  const [form, setForm] = useState({
-    name: "",
-    number: "",
-    email: "",
-  });
+export const AuthForm = ({ onClose }) => {
+  const { sendOTP, verifyOTP, loading, error } = useContext(AuthContext);
 
-  const handleSubmit = (e) => {
+  const [step, setStep] = useState("phone");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [otp, setOtp] = useState("");
+
+  const handleSendOtp = async (e) => {
     e.preventDefault();
+    if (!phoneNumber.trim()) return;
+    const success = await sendOTP(phoneNumber);
+    if (success) {
+      setStep("otp");
+    }
+  };
 
-    console.log("Form Data:", form);
-
-    alert(isLogin ? "Login Success (Dummy)" : "Signup Success (Dummy)");
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    if (!phoneNumber.trim() || !otp.trim()) return;
+    const success = await verifyOTP(phoneNumber, otp);
+    if (success) {
+      onClose();
+    }
   };
 
   return (
-    <div className="bg-linear-to-b from-brand-dark to-brand-darkest p-8 rounded-xl w-87.5 shadow-lg">
-      
-      <div className="flex justify-center gap-6 mb-6">
+     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-2000">
+      <div className="bg-surface p-6 rounded-xl w-96 border border-brand-light/40">
+        <h2 className="text-xl font-bold text-text-primary mb-4">
+          {step === "phone" ? "Login" : "Enter OTP"}
+        </h2>
+        {step === "phone" ? (
+          <form onSubmit={handleSendOtp} className="flex flex-col gap-3">
+            <input
+              type="tel"
+              placeholder="+91XXXXXXXXXX"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              className="bg-bg text-text-primary px-4 py-2.5 rounded-lg border border-brand-light/40 outline-none focus:border-brand-primary"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-brand-primary text-white py-2.5 rounded-lg font-semibold disabled:opacity-60"
+            >
+              {loading ? "Sending..." : "Send OTP"}
+            </button>
+          </form>
+           ) : (
+          <form onSubmit={handleVerifyOtp} className="flex flex-col gap-3">
+            <input
+              type="text"
+              placeholder="6-digit OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              maxLength={6}
+              className="bg-bg text-text-primary px-4 py-2.5 rounded-lg border border-brand-light/40 outline-none focus:border-brand-primary"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-brand-primary text-white py-2.5 rounded-lg font-semibold disabled:opacity-60"
+            >
+              {loading ? "Verifying..." : "Verify OTP"}
+            </button>
+          </form>
+           )}
+            {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
+
         <button
-          onClick={() => setIsLogin(false)}
-          className={!isLogin ? "font-bold text-white" : "text-gray-300"}
+          onClick={onClose}
+          className="text-text-secondary text-sm mt-4 hover:text-text-primary"
         >
-          Sign Up
-        </button>
-        <button
-          onClick={() => setIsLogin(true)}
-          className={isLogin ? "font-bold text-white" : "text-gray-300"}
-        >
-          Login
+          Cancel
         </button>
       </div>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-
-        {!isLogin && (
-          <>
-            <input
-              type="text"
-              placeholder="Enter Your Name"
-              className="input"
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-            />
-            <input
-              type="text"
-              placeholder="Enter Your Number"
-              className="input"
-              onChange={(e) => setForm({ ...form, number: e.target.value })}
-            />
-          </>
-        )}
-
-        <input
-          type="email"
-          placeholder="Enter Your Email"
-          className="input"
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
-
-        <button className="w-full bg-brand-primary py-2 rounded-lg font-semibold hover:bg-brand-dark transition-all text-white ">
-          {isLogin ? "Login" : "Sign Up"}
-        </button>
-      </form>
-
-      <div className="text-center my-4 text-sm text-gray-300">Or</div>
-
-      <button className="w-full border py-2 rounded-lg hover:bg-white/10">
-        Sign Up With Google
-      </button>
     </div>
   );
 };
