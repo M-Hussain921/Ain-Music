@@ -6,10 +6,10 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      "/api": {
-        target: "https://saavn.dev",
+      "/saavn": {
+        target: "https://saavn.sumit.co",
         changeOrigin: true,
-        secure: false,
+        rewrite: (path) => path.replace(/^\/saavn/, ""),
       },
     },
   },
