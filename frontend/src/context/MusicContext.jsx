@@ -1,9 +1,13 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import { mapRawSongToSongs } from "../utils/mapRawSong";
+import { authFetch } from "../utils/apiClient";
+import { AuthContext } from "./AuthContext";
+import { runInBatches } from "../utils/runInBatches";
 
 export const MusicContext = createContext();
 
-const SAAVN_API = "https://saavn.sumit.co/api";
+const SAAVN_API = "/saavn/api";
+const BACKEND_API = "http://localhost:4000/api/user";
 
 async function fetchSongsByQuery(query, limit = 10) {
   try {
@@ -18,7 +22,7 @@ async function fetchSongsByQuery(query, limit = 10) {
     const data = await res.json();
     const results = data?.data?.results || [];
     if (results.length === 0) return [];
-    console.log(results)
+    console.log(results);
 
     return results.map(mapRawSongToSongs);
   } catch (error) {
@@ -138,6 +142,8 @@ async function fetchArtistDetails(id) {
 }
 
 export function MusicProvider({ children }) {
+  const { token } = useContext(AuthContext);
+
   const [homeContent, setHomeContent] = useState({
     weeklyTop: [],
     newReleases: [],
@@ -154,9 +160,9 @@ export function MusicProvider({ children }) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const [favorites, setFavorites] = useState([]);
-  const [playlists, setPlaylists] = useState([
-    { id: 1, name: "My First Playlist", tracks: [] },
-  ]);
+  const [favArtists, setFavArtists] = useState([]);
+  const [favAlbums, setFavAlbums] = useState([]);
+  const [playlists, setPlaylists] = useState([]);
 
   const [queue, setQueue] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -376,8 +382,10 @@ export function MusicProvider({ children }) {
         "Jasleen Royal",
       ];
 
-      const broadArtistResults = await Promise.all(
-        broadArtistQueries.map((q) => fetchArtistByQuery(q, 1)),
+      const broadArtistResults = await runInBatches(
+        broadArtistQueries,
+        6,
+        (q) => fetchArtistByQuery(q, 1),
       );
 
       const allArtistsFlat = broadArtistResults.flat();
@@ -401,48 +409,129 @@ export function MusicProvider({ children }) {
   };
 
   const searchMusic = async (query) => {
-  if (!query.trim()) {
-    setSearchResults({ songs: [], artists: [], playlists: [] });
-    return;
-  }
-  try {
-    const [songs, artists, playlists] = await Promise.all([
-      fetchSongsByQuery(query, 8),
-      fetchArtistByQuery(query, 4),
-      fetchAlbumsByQuery(query, 4),   
-    ]);
-    setSearchResults({ songs, artists, playlists });
-  } catch (error) {
-    console.error("Search error", error);
-  }
-};
-
-  const toggleFavorite = (track) => {
-    setFavorites((prevFavs) => {
-      const isAlreadyFav = prevFavs.some((item) => item.id === track.id);
-      return isAlreadyFav
-        ? prevFavs.filter((item) => item.id !== track.id)
-        : [...prevFavs, track];
-    });
+    if (!query.trim()) {
+      setSearchResults({ songs: [], artists: [], playlists: [] });
+      return;
+    }
+    try {
+      const [songs, artists, playlists] = await Promise.all([
+        fetchSongsByQuery(query, 8),
+        fetchArtistByQuery(query, 4),
+        fetchAlbumsByQuery(query, 4),
+      ]);
+      setSearchResults({ songs, artists, playlists });
+    } catch (error) {
+      console.error("Search error", error);
+    }
   };
 
-  const createPlaylist = (name) => {
-    setPlaylists((prev) => [...prev, { id: Date.now(), name, tracks: [] }]);
+  const toggleFavorite = async (track, token) => {
+    try {
+      const data = await authFetch(`${BACKEND_API}/liked-song`, token, {
+        method: "POST",
+        body: JSON.stringify({ songId: track.id }),
+      });
+      setFavorites((prevFavs) => {
+        return data.liked
+          ? [...prevFavs, track]
+          : prevFavs.filter((item) => item.id !== track.id);
+      });
+    } catch (error) {
+      console.error("toggle favorite error:", error);
+    }
   };
 
-  const addSongToPlaylist = (playlistId, track) => {
-    setPlaylists((prevPlaylists) =>
-      prevPlaylists.map((pl) => {
-        if (pl.id !== playlistId) return pl;
-        const exists = pl.tracks.some((t) => t.id === track.id);
-        return exists ? pl : { ...pl, tracks: [...pl.tracks, track] };
-      }),
-    );
+  const toggleFavArtist = async (artist, token) => {
+    try {
+      const data = await authFetch(`${BACKEND_API}/liked-artist`, token, {
+        method: "POST",
+        body: JSON.stringify({ artistId: artist.id }),
+      });
+      setFavArtists((prevFavArtist) => {
+        return data.liked
+          ? [...prevFavArtist, artist]
+          : prevFavArtist.filter((item) => item.id !== artist.id);
+      });
+    } catch (error) {
+      console.error("toggle favorite error:", error);
+    }
+  };
+
+  const toggleFavAlbum = async (album, token) => {
+    try {
+      const data = await authFetch(`${BACKEND_API}/liked-playlist`, token, {
+        method: "POST",
+        body: JSON.stringify({ playlistId: album.id }),
+      });
+      setFavAlbums((prevFavAlbum) => {
+        return data.liked
+          ? [...prevFavAlbum, album]
+          : prevFavAlbum.filter((item) => item.id !== album.id);
+      });
+    } catch (error) {
+      console.error("toggle favorite error:", error);
+    }
+  };
+
+  const createPlaylist = async (name, token) => {
+    try {
+      const data = await authFetch(`${BACKEND_API}/create-playlist`, token, {
+        method: "POST",
+        body: JSON.stringify({ name }),
+      });
+      setPlaylists((prev) => [...prev, data.data]);
+    } catch (error) {
+      console.error("create playlist error:", error);
+    }
+  };
+
+  const addSongToPlaylist = async (playlistId, token, track) => {
+    try {
+      const data = await authFetch(`${BACKEND_API}/my-playlist`, token, {
+        method: "POST",
+        body: JSON.stringify({ playlistId, songId: track.id }),
+      });
+      setPlaylists((prevPlaylists) =>
+        prevPlaylists.map((pl) => {
+          if (pl._id !== playlistId) return pl;
+          return {
+            ...pl,
+            songs: data.liked
+              ? [...pl.songs, track.id]
+              : pl.songs.filter((songId) => songId !== track.id),
+          };
+        }),
+      );
+    } catch (error) {
+      console.error("add to song playlist error:", error);
+    }
   };
 
   useEffect(() => {
     loadHomePageContent();
   }, []);
+
+  useEffect(() => {
+    if (!token) return;
+    const fetchUserData = async () => {
+      try {
+        const [songsData, artistsData, playlistsData, myPlaylistsData] =
+          await Promise.all([
+            authFetch(`${BACKEND_API}/liked-songs`, token),
+            authFetch(`${BACKEND_API}/liked-artists`, token),
+            authFetch(`${BACKEND_API}/liked-playlists`, token),
+            authFetch(`${BACKEND_API}/my-playlists`, token),
+          ]);
+        setFavorites(songsData.data);
+        setFavArtists(artistsData.data);
+        setFavAlbums(playlistsData.data);
+        setPlaylists(myPlaylistsData.data);
+      } catch (error) {
+        console.error("fetch user data error:", error);
+      }
+    };
+    fetchUserData();
+  }, [token]);
 
   return (
     <MusicContext.Provider
@@ -479,6 +568,8 @@ export function MusicProvider({ children }) {
         currentArtistId,
         fetchArtistDetails,
         playArtistSongs,
+        toggleFavAlbum,
+        toggleFavArtist,
       }}
     >
       {children}
