@@ -15,7 +15,7 @@ export const AuthForm = ({ onClose }) => {
     const success = await sendOTP(phoneNumber);
     if (success) {
       setStep("otp");
-    }
+    }N
   };
 
   const handleVerifyOtp = async (e) => {

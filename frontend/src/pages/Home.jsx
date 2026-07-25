@@ -1,20 +1,20 @@
 import { useContext } from "react";
 import HeroImg from "../assets/images/hero-image.png";
 import { MusicContext } from "../context/MusicContext";
-import {SongSection} from "../components/SongSection";
+import { SongSection } from "../components/SongSection";
 import { ArtistSection } from "../components/ArtistSection";
-import {AlbumSection} from "../components/AlbumSection";
+import { AlbumSection } from "../components/AlbumSection";
 
 export const Home = () => {
-  const {homeContent}=useContext(MusicContext);
+  const { homeContent } = useContext(MusicContext);
 
   return (
     <div>
       <section className="hero-section   relative w-full h-[95vh] flex items-center overflow-x-hidden bg-black">
-        <div className="absolute inset-0 bg-linear-to-r from-black via-black/70 to-transparent z-10"/>
+        <div className="absolute inset-0 bg-linear-to-r from-black via-black/70 to-transparent z-10" />
         <div className="hero-img absolute right-0 top-0 h-full w-full ">
           <img
-            src={HeroImg} 
+            src={HeroImg}
             alt="hero"
             className="w-full h-full object-cover opacity-90"
           />
@@ -44,25 +44,24 @@ export const Home = () => {
         </div>
       </section>
 
-<div className="px-4 py-5">
-      <SongSection
-        titleStart="Weekly Top"
-        titleHighlight="Songs"
-        songs={homeContent.weeklyTop}
-        viewAllLink="/category/weekly-top"
-      />
+      <div className="px-4 py-5">
+        <SongSection
+          titleStart="Weekly Top"
+          titleHighlight="Songs"
+          songs={homeContent.weeklyTop}
+          viewAllLink="/category/weekly-top"
+        />
 
-      <SongSection
-        titleStart="New Release"
-        titleHighlight="Songs"
-        songs={homeContent.newReleases}
-        viewAllLink="/category/new-releases"
-      />
+        <SongSection
+          titleStart="New Release"
+          titleHighlight="Songs"
+          songs={homeContent.newReleases}
+          viewAllLink="/category/new-releases"
+        />
 
-      <ArtistSection/>
-      <AlbumSection/>
+        <ArtistSection />
+        <AlbumSection />
       </div>
-
     </div>
   );
 };
