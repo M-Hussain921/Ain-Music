@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState, useEffect, useContext,useRef } from "react";
 import { mapRawSongToSongs } from "../utils/mapRawSong";
 import { authFetch } from "../utils/apiClient";
 import { AuthContext } from "./AuthContext";
@@ -28,6 +28,19 @@ async function fetchSongsByQuery(query, limit = 10) {
   } catch (error) {
     console.warn(`Server failed. error:${error}`);
     return [];
+  }
+}
+
+async function fetchSongById(id) {
+  try {
+    const res = await fetch(`${SAAVN_API}/songs?id=${id}`);
+    if (!res.ok) throw new Error("Server down");
+    const data = await res.json();
+    const results = data?.data || [];
+    return results[0] ? mapRawSongToSongs(results[0]) : null;
+  } catch (err) {
+    console.warn("Song fetch error:", err);
+    return null;
   }
 }
 
@@ -142,6 +155,7 @@ async function fetchArtistDetails(id) {
 }
 
 export function MusicProvider({ children }) {
+  const didLoadRef = useRef(false);
   const { token } = useContext(AuthContext);
 
   const [homeContent, setHomeContent] = useState({
@@ -289,10 +303,10 @@ export function MusicProvider({ children }) {
     try {
       const [weeklyTop, newReleases, trendingAlbums, newReleaseAlbums] =
         await Promise.all([
-          fetchSongsByQuery("trending bollywood", 12),
-          fetchSongsByQuery("New bollywood", 12),
-          fetchAlbumsByQuery("trending bollywood", 15),
-          fetchAlbumsByQuery("new bollywood", 15),
+          fetchSongsByQuery("trending bollywood", 5),
+          fetchSongsByQuery("New bollywood", 5),
+          fetchAlbumsByQuery("trending bollywood", 7),
+          fetchAlbumsByQuery("new bollywood", 7),
         ]);
 
       const internationalArtists = [
@@ -312,17 +326,22 @@ export function MusicProvider({ children }) {
         "Amitabh Bhattacharya",
       ];
 
-      const artistResults = await Promise.all([
-        ...internationalArtists.map((name) => fetchArtistByQuery(name, 1)),
-        ...indianArtists.map((q) => fetchArtistByQuery(q, 1)),
-      ]);
+      const queries = [...internationalArtists, ...indianArtists];
 
-      const albumsResults = await Promise.all([
-        ...internationalArtists.map((name) => fetchAlbumsByQuery(name, 1)),
-        ...indianArtists.map((q) => fetchAlbumsByQuery(q, 1)),
-      ]);
+     const artistsResults = await runInBatches(
+  queries,
+  2,
+  (name) => fetchArtistByQuery(name, 1)
+);
+      
 
-      const popularArtist = artistResults.flat();
+const albumsResults = await runInBatches(
+  queries,
+  2,
+  (name) => fetchAlbumsByQuery(name, 1)
+);
+
+      const popularArtist = artistsResults.flat();
       const topAlbums = albumsResults.flat();
 
       const uniqueAlbums = Array.from(
@@ -384,7 +403,7 @@ export function MusicProvider({ children }) {
 
       const broadArtistResults = await runInBatches(
         broadArtistQueries,
-        6,
+        2,
         (q) => fetchArtistByQuery(q, 1),
       );
 
@@ -508,8 +527,10 @@ export function MusicProvider({ children }) {
   };
 
   useEffect(() => {
-    loadHomePageContent();
-  }, []);
+  if (didLoadRef.current) return;
+  didLoadRef.current = true;
+  loadHomePageContent();
+}, []);
 
   useEffect(() => {
     if (!token) return;
@@ -570,6 +591,7 @@ export function MusicProvider({ children }) {
         playArtistSongs,
         toggleFavAlbum,
         toggleFavArtist,
+        fetchSongById,
       }}
     >
       {children}
