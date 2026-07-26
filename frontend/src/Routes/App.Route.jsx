@@ -8,7 +8,7 @@ import { ArtistDetailPage } from "../pages/ArtistDetailPage.jsx";
 import { Home } from "../pages/Home.jsx";
 import { MostPlayed } from "../pages/MostPlayed.jsx";
 import { RecentlyAdded } from "../pages/RecentlyAdded.jsx";
-import { YourFavorites } from "../pages/YourFavorites.jsx";
+import { YourFavoritesPage } from "../pages/YourFavorites.jsx";
 import { YourPlaylistsPage } from "../pages/YourPlaylist.jsx";
 import { Layout } from "../components/Layout.jsx";
 import { Settings } from "../pages/settingsPage.jsx";
@@ -25,7 +25,7 @@ export const AppRoute = () => {
         <Route path="recently-added" element={<RecentlyAdded />} />
         <Route path="most-played" element={<MostPlayed />} />
         <Route path="your-playlists" element={<YourPlaylistsPage />} />
-        <Route path="your-favorites" element={<YourFavorites />} />
+        <Route path="your-favorites" element={<YourFavoritesPage />} />
         <Route path="add-playlist" element={<AddPlaylist />} />
         <Route path="settings" element={<Settings />} />
         <Route path="/album/:id" element={<AlbumDetailPage />} />
