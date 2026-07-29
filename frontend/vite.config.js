@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/saavn": {
-        target: "https://saavn.sumit.co",
+        target: "http://localhost:4000",   
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/saavn/, ""),
       },
