@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 
-const SAAVN_API = "https://saavn.sumit.co/api";
+const SAAVN_API = "https://jiosaavn-api-w8k7.onrender.com/api";
 
 const cache = new Map();
 
