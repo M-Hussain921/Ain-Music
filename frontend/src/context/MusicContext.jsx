@@ -53,9 +53,12 @@ async function fetchArtistByQuery(query, limit = 10) {
     if (!res.ok) throw new Error("Server down");
 
     const data = await res.json();
-    const results = data?.data?.results || [];
+   const results = Array.isArray(data?.data)
+  ? data.data
+  : data?.data?.results || [];
     if (results.length === 0) return [];
 
+     if (!Array.isArray(results) || results.length === 0) return [];
     return results.map((artist) => ({
       id: artist.id,
       name: artist.name,
@@ -444,53 +447,91 @@ const albumsResults = await runInBatches(
     }
   };
 
-  const toggleFavorite = async (track, token) => {
-    try {
-      const data = await authFetch(`${BACKEND_API}/liked-song`, token, {
-        method: "POST",
-        body: JSON.stringify({ songId: track.id }),
-      });
-      setFavorites((prevFavs) => {
-        return data.liked
-          ? [...prevFavs, track]
-          : prevFavs.filter((item) => item.id !== track.id);
-      });
-    } catch (error) {
-      console.error("toggle favorite error:", error);
-    }
-  };
+  const toggleFavorite = async (item, type, token, extra = {}) => {
+  try {
+    let url = "";
+    let body = {};
 
-  const toggleFavArtist = async (artist, token) => {
-    try {
-      const data = await authFetch(`${BACKEND_API}/liked-artist`, token, {
-        method: "POST",
-        body: JSON.stringify({ artistId: artist.id }),
-      });
-      setFavArtists((prevFavArtist) => {
-        return data.liked
-          ? [...prevFavArtist, artist]
-          : prevFavArtist.filter((item) => item.id !== artist.id);
-      });
-    } catch (error) {
-      console.error("toggle favorite error:", error);
-    }
-  };
+    switch (type) {
+      case "song":
+        url = `${BACKEND_API}/liked-song`;
+        body = { songId: item.id };
+        break;
 
-  const toggleFavAlbum = async (album, token) => {
-    try {
-      const data = await authFetch(`${BACKEND_API}/liked-playlist`, token, {
-        method: "POST",
-        body: JSON.stringify({ playlistId: album.id }),
-      });
-      setFavAlbums((prevFavAlbum) => {
-        return data.liked
-          ? [...prevFavAlbum, album]
-          : prevFavAlbum.filter((item) => item.id !== album.id);
-      });
-    } catch (error) {
-      console.error("toggle favorite error:", error);
+      case "artist":
+        url = `${BACKEND_API}/liked-artist`;
+        body = { artistId: item.id };
+        break;
+
+      case "album":
+        url = `${BACKEND_API}/liked-playlist`; 
+        body = { playlistId: item.id };
+        break;
+
+      case "playlist-song":
+        url = `${BACKEND_API}/my-playlist`;
+        body = {
+          playlistId: extra.playlistId,
+          songId: item.id,
+        };
+        break;
+
+      default:
+        throw new Error("Invalid favorite type");
     }
-  };
+
+    const data = await authFetch(url, token, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+
+    switch (type) {
+      case "song":
+        setFavorites((prev) =>
+          data.liked
+            ? [...prev, item]
+            : prev.filter((i) => i.id !== item.id)
+        );
+        break;
+
+      case "artist":
+        setFavArtists((prev) =>
+          data.liked
+            ? [...prev, item]
+            : prev.filter((i) => i.id !== item.id)
+        );
+        break;
+
+      case "album":
+        setFavAlbums((prev) =>
+          data.liked
+            ? [...prev, item]
+            : prev.filter((i) => i.id !== item.id)
+        );
+        break;
+
+      case "playlist-song":
+        setPlaylists((prev) =>
+          prev.map((pl) => {
+            if (pl._id !== extra.playlistId) return pl;
+
+            return {
+              ...pl,
+              songs: data.liked
+                ? [...pl.songs, item.id]
+                : pl.songs.filter((id) => id !== item.id),
+            };
+          })
+        );
+        break;
+
+      default:
+        break;
+    }
+  } catch (error) {
+    console.error("toggle favorite error:", error);
+  }
+};
 
   const createPlaylist = async (name, token) => {
     try {
@@ -504,27 +545,27 @@ const albumsResults = await runInBatches(
     }
   };
 
-  const addSongToPlaylist = async (playlistId, token, track) => {
-    try {
-      const data = await authFetch(`${BACKEND_API}/my-playlist`, token, {
-        method: "POST",
-        body: JSON.stringify({ playlistId, songId: track.id }),
-      });
-      setPlaylists((prevPlaylists) =>
-        prevPlaylists.map((pl) => {
-          if (pl._id !== playlistId) return pl;
-          return {
-            ...pl,
-            songs: data.liked
-              ? [...pl.songs, track.id]
-              : pl.songs.filter((songId) => songId !== track.id),
-          };
-        }),
-      );
-    } catch (error) {
-      console.error("add to song playlist error:", error);
-    }
-  };
+  // const addSongToPlaylist = async (playlistId, token, track) => {
+  //   try {
+  //     const data = await authFetch(`${BACKEND_API}/my-playlist`, token, {
+  //       method: "POST",
+  //       body: JSON.stringify({ playlistId, songId: track.id }),
+  //     });
+  //     setPlaylists((prevPlaylists) =>
+  //       prevPlaylists.map((pl) => {
+  //         if (pl._id !== playlistId) return pl;
+  //         return {
+  //           ...pl,
+  //           songs: data.liked
+  //             ? [...pl.songs, track.id]
+  //             : pl.songs.filter((songId) => songId !== track.id),
+  //         };
+  //       }),
+  //     );
+  //   } catch (error) {
+  //     console.error("add to song playlist error:", error);
+  //   }
+  // };
 
   useEffect(() => {
   if (didLoadRef.current) return;
@@ -543,9 +584,10 @@ const albumsResults = await runInBatches(
             authFetch(`${BACKEND_API}/liked-playlists`, token),
             authFetch(`${BACKEND_API}/my-playlists`, token),
           ]);
-        setFavorites(songsData.data);
+        setFavorites(songsData.data.map(mapRawSongToSongs));
         setFavArtists(artistsData.data);
-        setFavAlbums(playlistsData.data);
+        console.log("playlistsData.data:", playlistsData);
+        setFavAlbums(playlistsData.data.map(mapRawSongToSongs));
         setPlaylists(myPlaylistsData.data);
       } catch (error) {
         console.error("fetch user data error:", error);
@@ -568,7 +610,7 @@ const albumsResults = await runInBatches(
         toggleFavorite,
         playlists,
         createPlaylist,
-        addSongToPlaylist,
+        // addSongToPlaylist,
         fetchSongsByQuery,
         fetchArtistByQuery,
         fetchAlbumsByQuery,
@@ -589,9 +631,10 @@ const albumsResults = await runInBatches(
         currentArtistId,
         fetchArtistDetails,
         playArtistSongs,
-        toggleFavAlbum,
-        toggleFavArtist,
+        // toggleFavAlbum,
+        // toggleFavArtist,
         fetchSongById,
+        toggleFavorite
       }}
     >
       {children}
