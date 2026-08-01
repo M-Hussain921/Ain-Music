@@ -6,6 +6,7 @@ import { useClickOutside } from "../hooks/useClickOutside.js";
 import { useDebounce } from "../hooks/useDebounce.js";
 import { AuthForm } from "../components/AuthForm.jsx";
 import { AuthContext } from "../context/AuthContext";
+import { LogoutButton } from "../components/LogOutButton.jsx";
 
 export const Navbar = ({ onMenuClick }) => {
   const [input, setInput] = useState("");
@@ -23,8 +24,8 @@ export const Navbar = ({ onMenuClick }) => {
   } = useContext(MusicContext);
   const [loadingKey, setLoadingKey] = useState(null);
 
-  const { user, token } = useContext(AuthContext);
-console.log("token:", token);
+  const { user, token, logOut } = useContext(AuthContext);
+  console.log(token);
   const navigate = useNavigate();
   const containerRef = useRef(null);
 
@@ -222,7 +223,11 @@ console.log("token:", token);
             </div>
           )}
         </form>
-        {!token && (
+        {token ? (
+          <div className="flex items-center space-x-4">
+            <LogoutButton onClick={() => logOut()} className="mr-2 text-base" />
+          </div>
+        ) : (
           <div className="flex items-center space-x-4">
             <button
               onClick={() => setAuthformOpen(true)}
