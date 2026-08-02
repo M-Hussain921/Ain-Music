@@ -1,7 +1,7 @@
 import express from "express";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import {
-  likedSongs,
+  likeSongs,
   getLikedSongs,
   likedPlaylist,
   getLikedPlaylists,
@@ -19,7 +19,7 @@ import {
 
 const router = express.Router();
 
-router.post("/liked-song", authMiddleware, likedSongs);
+router.post("/liked-song", authMiddleware, likeSongs);
 router.get("/liked-songs", authMiddleware, getLikedSongs);
 
 router.post("/liked-playlist", authMiddleware, likedPlaylist);
