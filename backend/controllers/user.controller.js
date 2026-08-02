@@ -1,6 +1,7 @@
 import users from "../models/user.js";
 import playlists from "../models/playlist.js";
 import { toggleLike } from "../utils/toggleLike.js";
+import * as apiService from "../services/api.service.js";
 
 const getUserField = (fieldName) => async (req, res) => {
   try {
@@ -30,7 +31,7 @@ const getMostPlayedField = (fieldName) => async (req, res) => {
   }
 };
 
-export const likedSongs = async (req, res) => {
+export const likeSongs = async (req, res) => {
   const { songId } = req.body;
   if (!songId) return res.status(400).json({ message: "Song Id is missing" });
 
@@ -56,7 +57,51 @@ export const likedSongs = async (req, res) => {
   }
 };
 
-export const getLikedSongs = getUserField("likedSongs");
+export const getLikedSongs = async (req, res) => {
+  try {
+    const user = await users.findById(req.user.userId).lean();
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const ids = user.likedSongs;
+
+    if (ids.length === 0) {
+      return res.status(200).json({ success: true, data: [] });
+    }
+
+    const songs = await apiService.fetchSongById(ids);
+
+    res.status(200).json({
+      success: true,
+      data: Array.isArray(songs) ? songs.filter(Boolean) : [],
+    });
+  } catch (error) {
+    console.error("server error: ", error);
+    res.status(500).json({ message: "server error" });
+  }
+};
+
+export const getLikedPlaylists = async (req, res) => {
+  try {
+    const user = await users.findById(req.user.userId).lean();
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const ids = user.likedPlaylists;
+
+    if (ids.length === 0) {
+      return res.status(200).json({ success: true, data: [] });
+    }
+
+    const playlists = await apiService.fetchAlbumDetails(ids);
+
+    res.status(200).json({
+      success: true,
+      data: Array.isArray(playlists) ? playlists.filter(Boolean) : [],
+    });
+  } catch (error) {
+    console.error("server error: ", error);
+    res.status(500).json({ message: "server error" });
+  }
+};
 
 export const likedPlaylist = async (req, res) => {
   const { playlistId } = req.body;
@@ -87,8 +132,6 @@ export const likedPlaylist = async (req, res) => {
     res.status(500).json({ message: "server error" });
   }
 };
-
-export const getLikedPlaylists = getUserField("likedPlaylists");
 
 export const likedArtists = async (req, res) => {
   const { artistId } = req.body;
