@@ -25,7 +25,6 @@ export const Navbar = ({ onMenuClick }) => {
   const [loadingKey, setLoadingKey] = useState(null);
 
   const { user, token, logOut } = useContext(AuthContext);
-  console.log(token);
   const navigate = useNavigate();
   const containerRef = useRef(null);
 
