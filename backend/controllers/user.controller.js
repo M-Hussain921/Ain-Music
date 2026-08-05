@@ -91,7 +91,7 @@ export const getLikedPlaylists = async (req, res) => {
       return res.status(200).json({ success: true, data: [] });
     }
 
-    const playlists = await apiService.fetchAlbumDetails(ids);
+    const playlists = await apiService.fetchMultipleAlbumDetails(ids);
 
     res.status(200).json({
       success: true,
@@ -160,7 +160,38 @@ export const likedArtists = async (req, res) => {
   }
 };
 
-export const getLikedArtists = getUserField("likedArtists");
+export const getLikedArtists = async (req, res) => {
+  try {
+    const user = await users.findById(req.user.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const ids = user.likedArtists;
+
+    if (ids.length === 0) {
+      return res.status(200).json({ success: true, data: [] });
+    }
+
+    const artists = await Promise.all(
+      ids.map(async (id) => {
+        try {
+          const artist = await apiService.fetchArtistDetails(id);
+          return artist;
+        } catch (err) {
+          console.error("Artist fetch failed:", id);
+          return null;
+        }
+      })
+    );
+
+    res.status(200).json({
+      success: true,
+      data: artists.filter(Boolean),
+    });
+  } catch (error) {
+    console.error("server error: ", error);
+    res.status(500).json({ message: "server error" });
+  }
+};
 
 export const createPlaylist = async (req, res) => {
   const { name } = req.body;
