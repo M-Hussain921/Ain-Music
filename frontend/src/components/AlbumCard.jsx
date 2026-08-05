@@ -1,8 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { AlbumPlayButton } from "./AlbumPlayButton";
+import { useContext } from "react";
+import { MusicContext } from "../context/MusicContext";
+import { FavoriteButton } from "./FavoriteButton";
+import { AuthContext } from "../context/AuthContext";
 
 export const AlbumCard = ({ albums }) => {
   const navigate = useNavigate();
+
+  const { toggleFavorite } = useContext(MusicContext);
+  const { token } = useContext(AuthContext);
 
   return (
     <div
@@ -15,12 +22,15 @@ export const AlbumCard = ({ albums }) => {
           className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
         />
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-        <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute bottom-1 right-6  flex gap-9  opacity-0 group-hover:opacity-100 z-10">
+          <FavoriteButton item={albums} type="album" />
           <AlbumPlayButton album={albums} />
         </div>
       </div>
 
-      <p className="mt-3 text-sm font-semibold text-text-primary truncate">{albums.title}</p>
+      <p className="mt-3 text-sm font-semibold text-text-primary truncate">
+        {albums.title}
+      </p>
       <p className="text-xs text-text-secondary truncate">{albums.artist}</p>
     </div>
   );
