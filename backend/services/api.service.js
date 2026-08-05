@@ -75,10 +75,41 @@ export const fetchArtistsByQuery = async (query, limit = 10) => {
   }
 
   const data = await res.json();
-  const result = data?.data || [];
+  const result = data?.data?.results || []; 
 
   setCache(key, result);
   return result;
+};
+
+export const fetchArtistDetails = async (id) => {
+  const key = `artist:${id}`;
+  if (getCached(key)) return getCached(key);
+
+  const res = await fetch(`${SAAVN_API}/artists?id=${id}`);
+  if (!res.ok) {
+    const errorBody = await res.text();
+    console.error(
+      `Saavn API failed — status: ${res.status}, body: ${errorBody}`,
+    );
+    throw new Error("Saavn API failed");
+  }
+
+  const data = await res.json();
+  const artist = data?.data;
+  if (!artist) return null;
+
+  const formatted = {
+    id: artist.id,
+    name: artist.name,
+    image: artist.image?.[2]?.url || "https://via.placeholder.com/150",
+    bio: artist.bio || null,
+    topSongs: artist.topSongs || [],
+    topAlbums: artist.topAlbums || [],
+    songs: artist.songs || [],
+  };
+
+  setCache(key, formatted);
+  return formatted;
 };
 
 export const fetchAlbumsByQuery = async (query, limit = 10) => {
@@ -129,7 +160,7 @@ export const fetchAlbumById = async (ids) => {
   return result;
 };
 
-export const fetchAlbumDetails = async (ids) => {
+export const fetchMultipleAlbumDetails = async (ids) => {
   const idArray = Array.isArray(ids) ? ids : [ids];
 
   const results = await Promise.all(
@@ -142,7 +173,6 @@ export const fetchAlbumDetails = async (ids) => {
         if (!res.ok) return null;
 
         const data = await res.json();
-        // console.log("RAW ALBUM RESPONSE:", JSON.stringify(data?.data, null, 2));
         const album = data?.data;
         if (!album) return null;
 
@@ -169,22 +199,31 @@ export const fetchAlbumDetails = async (ids) => {
   return results.filter(Boolean);
 };
 
-// export const fetchArtistDetails = async (id) => {
-//   const key = `artist:${id}`;
-//   if (getCached(key)) return getCached(key);
+export const fetchAlbumDetails = async (id) => {
+  const key = `album:${id}`;
+  if (getCached(key)) return getCached(key);
 
-//   const res = await fetch(`${SAAVN_API}/artists?id=${id}`);
-//   if (!res.ok) {
-//     const errorBody = await res.text();
-//     console.error(
-//       `Saavn API failed — status: ${res.status}, body: ${errorBody}`,
-//     );
-//     throw new Error("Saavn API failed");
-//   }
+  const res = await fetch(`${SAAVN_API}/albums?id=${id}`);
+  if (!res.ok) {
+    const errorBody = await res.text();
+    console.error(`Saavn API failed — status: ${res.status}, body: ${errorBody}`);
+    throw new Error("Saavn API failed");
+  }
 
-//   const data = await res.json();
-//   const artist = data?.data || null;
+  const data = await res.json();
+  const album = data?.data;
+  if (!album) return null;
 
-//   setCache(key, artist);
-//   return artist;
-// };
+  const formatted = {
+    id: album.id,
+    title: album.name,
+    artist: album.artists?.all?.[0]?.name
+      || album.songs?.[0]?.artists?.primary?.[0]?.name
+      || "Unknown",
+    image: album.image?.[2]?.url,
+    songs: album.songs || [],
+  };
+
+  setCache(key, formatted);
+  return formatted;
+};
