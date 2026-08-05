@@ -15,7 +15,7 @@ import { formatTime } from "../utils/SongDuration.js";
 import { FavoriteButton } from "../components/FavoriteButton.jsx";
 import { AddToPlaylistButton } from "../components/AddToPlaylistButton.jsx";
 
-export const Player = () => {
+export const Player = ({song}) => {
   const {
     currentSong,
     isPlaying,
@@ -183,7 +183,7 @@ export const Player = () => {
         </div>
 
         <div className="flex justify-center items-center gap-5 pr-5 mr-5">
-          <FavoriteButton song={currentSong} />
+          <FavoriteButton item={currentSong} type="song" />
           <div className="relative">
             <AddToPlaylistButton song={currentSong} />
 
