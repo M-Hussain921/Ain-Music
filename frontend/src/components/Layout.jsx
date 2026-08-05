@@ -18,15 +18,16 @@ export const Layout = () => {
 
   return (
     <div className="flex flex-col h-screen bg-bg text-text-primary overflow-hidden">
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar
-          isOpen={sidebarOpen}
-          onClose={onClose}
-        />
-        <div className="flex-1 flex flex-col h-full relative overflow-hidden">
+      <div className="flex flex-1 overflow-hidden min-h-0">
+        <Sidebar isOpen={sidebarOpen} onClose={onClose} />
+        
+        <div className="flex-1 flex flex-col min-h-0">
           <Navbar onMenuClick={onMenuClick} />
-          <main className="flex-1 overflow-y-auto">
-            <Outlet />
+          
+          <main className="flex-1 overflow-y-auto flex flex-col">
+            <div className="flex-1">
+              <Outlet />
+            </div>
             <Footer />
           </main>
         </div>
