@@ -1,12 +1,20 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { MusicContext } from "../context/MusicContext";
-import { PlayButton } from "../components/AudioPlayButton";
 import { AlbumCard } from "../components/AlbumCard";
+import { SongsList } from "../components/SongsList";
+import { FavoriteButton } from "../components/FavoriteButton";
+import { ForwardBackButton } from "../components/ForwordBackButton";
 
 export const ArtistDetailPage = () => {
   const { id } = useParams();
-  const { fetchArtistDetails, playAlbum } = useContext(MusicContext);
+  const {
+    fetchArtistDetails,
+    playArtistSongs,
+    currentSong,
+    isPlaying,
+    togglePlayPause,
+  } = useContext(MusicContext);
 
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -31,32 +39,42 @@ export const ArtistDetailPage = () => {
 
   const hasBio = Boolean(artist.bio);
   const tabs = [
-    { key: "songs", label: "Songs" },
+    { key: "songs", label: "Popular Songs" },
     { key: "albums", label: "Albums" },
-    ...(hasBio ? [{ key: "biography", label: "Biography" }] : []),
   ];
 
   return (
-    <div className="p-6">
-      <div className="flex items-center gap-6 mb-8">
-        <img src={artist.image} className="w-40 h-40 rounded-full object-cover" />
+    <div className="p-4 sm:p-6">
+      <ForwardBackButton />
+
+      <div className="flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8 text-center sm:text-left">
+        <img
+          src={artist.image}
+          className="w-28 h-28 sm:w-40 sm:h-40 rounded-full object-cover"
+        />
         <div>
-          <h1 className="text-3xl font-bold">{artist.name}</h1>
-          <button
-            onClick={() => artist.topSongs.length && PlayArtistSongs(artist.topSongs, 0, artist.id)}
-            className="mt-3 px-5 py-2 bg-brand-primary text-white rounded-full font-semibold hover:scale-105 transition"
-          >
-            Play All
-          </button>
+          <h1 className="text-xl sm:text-3xl font-bold">{artist.name}</h1>
+          <div className="mt-3 flex items-center justify-center sm:justify-start gap-3">
+            <button
+              onClick={() =>
+                artist.topSongs.length &&
+                playArtistSongs(artist.topSongs, 0, artist.id)
+              }
+              className=" px-5 py-2 bg-brand-primary text-white rounded-full font-semibold hover:scale-105 transition"
+            >
+              Play All
+            </button>
+            <FavoriteButton item={artist} type="artist" />
+          </div>
         </div>
       </div>
 
-      <div className="flex gap-6 border-b border-brand-light/30 mb-6">
+      <div className="flex gap-4 sm:gap-6 border-b border-brand-light/30 mb-4 sm:mb-6 overflow-x-auto no-scrollbar">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`pb-3 px-1 font-semibold transition ${
+            className={`pb-2 sm:pb-3 px-1 font-semibold text-sm sm:text-base whitespace-nowrap transition ${
               activeTab === tab.key
                 ? "text-brand-primary border-b-2 border-brand-primary"
                 : "text-text-secondary hover:text-text-primary"
@@ -68,39 +86,33 @@ export const ArtistDetailPage = () => {
       </div>
 
       {activeTab === "songs" && (
-        <div className="flex flex-col gap-3">
-          {artist.topSongs.map((song) => (
-            <div key={song.id} className="flex items-center gap-4">
-              <img src={song.coverArt} className="w-12 h-12 rounded object-cover" />
-              <div className="flex-1">
-                <p className="text-sm font-semibold">{song.title}</p>
-                <p className="text-xs text-text-secondary">{song.artist}</p>
-              </div>
-              <PlayButton song={song} />
-            </div>
-          ))}
-        </div>
+        <SongsList
+          songs={artist.topSongs}
+          currentSong={currentSong}
+          isPlaying={isPlaying}
+          onSongClick={(song, index) => {
+            if (currentSong?.id === song.id && isPlaying) {
+              togglePlayPause();
+            } else {
+              playArtistSongs(artist.topSongs, index, artist.id);
+            }
+          }}
+        />
       )}
 
       {activeTab === "albums" && (
-        <div className="grid grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
           {artist.topAlbums.map((album) => (
             <AlbumCard key={album.id} albums={album} />
           ))}
         </div>
       )}
 
-      {activeTab === "biography" && hasBio && (
-        <p className="text-text-secondary whitespace-pre-line max-w-3xl leading-relaxed">
-          {artist.bio}
-        </p>
-      )}
-
-       <div>
-              <h2 className="m-auto text-center text-text-secondary text-xl font-semibold font-mono mt-10">
-                ----- Loop it. Live it. -----
-              </h2>
-            </div>
+      <div>
+        <h2 className="m-auto text-center text-text-secondary text-xl font-semibold font-mono mt-10">
+          ----- Loop it. Live it. -----
+        </h2>
+      </div>
     </div>
   );
 };
