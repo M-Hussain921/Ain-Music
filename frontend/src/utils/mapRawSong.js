@@ -1,8 +1,10 @@
+import { decodeHtml } from "./decodeHTML";
+
 export const mapRawSongToSongs = (song) => {
   return {
     id: song.id,
-    title: song.name,
-    artist: song.artists?.primary?.[0]?.name || "Unknown Artist",
+    title: decodeHtml(song.name),
+    artist: decodeHtml(song.artists?.primary?.[0]?.name) || "Unknown Artist",
     coverArt:
       song.image?.[2]?.url ||
       song.image?.[2]?.link ||
