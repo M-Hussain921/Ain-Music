@@ -38,8 +38,8 @@ export const Sidebar = ({ isOpen, onClose, setSidebarOpen }) => {
     {
       title: "Playlist and favorites",
       links: [
-        { name: "Your Playlist", icon: <FiList />, to: "/your-playlists" },
-        { name: "Your favorites", icon: <FiHeart />, to: "/your-favorites" },
+        { name: "My Playlist", icon: <FiList />, to: "/your-playlists" },
+        { name: "My Favorites", icon: <FiHeart />, to: "/your-favorites" },
         { name: "Add Playlist", icon: <FiPlus />, to: "/add-playlist" },
       ],
     },
@@ -57,15 +57,15 @@ export const Sidebar = ({ isOpen, onClose, setSidebarOpen }) => {
 
       <aside
         ref={sidebarRef}
-        className={`sidebar w-64 bg-surface h-screen text-text-secondary p-4 flex flex-col border-r border-brand-light/30 overflow-y-auto
+        className={`w-48 sm:w-64 sm:w-64 bg-surface h-screen h-dvh text-text-secondary p-2.5 sm:p-4 flex flex-col border-r border-brand-light/30 overflow-y-auto 
           fixed top-0 left-0 z-[1001] transition-transform duration-300
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
           lg:static lg:translate-x-0 lg:z-auto`}
       >
-        <div className="app-logo mb-3 p-2">
-          <img src={BrandLogo} alt="Ain Music" />
+        <div className="mb-3 p-2">
+          <img src={BrandLogo} alt="Ain Music" className="w-32 sm:w-full h-auto mx-auto" />
         </div>
-        <div className="menu-section flex flex-col space-y-5">
+        <div className="flex flex-col space-y-3 sm:space-y-5">
           {menuSections.map((section, sIndex) => (
             <div key={sIndex}>
               <p className="text-xs font-semibold text-brand-light/60 uppercase tracking-widest mb-1 px-1">
@@ -79,14 +79,14 @@ export const Sidebar = ({ isOpen, onClose, setSidebarOpen }) => {
                       end={link.to === "/"}
                       onClick={onClose}
                       className={({ isActive }) =>
-                        `flex items-center px-3 py-1.5 cursor-pointer transition-all duration-300 rounded-xl font-medium ${
+                        `flex items-center px-2.5 sm:px-3 py-1 sm:py-1.5 text-sm sm:text-base cursor-pointer transition-all duration-300 rounded-xl font-medium ${
                           isActive
                             ? "text-white bg-brand-primary shadow-lg shadow-brand-primary/30"
                             : "text-text-secondary hover:text-text-primary hover:bg-brand-light/30"
                         }`
                       }
                     >
-                      <span className="mr-3 text-lg">{link.icon}</span>
+                      <span className="mr-2 sm:mr-3 text-base sm:text-lg">{link.icon}</span>
                       {link.name}
                     </NavLink>
                   </li>
