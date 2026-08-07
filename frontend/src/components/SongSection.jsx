@@ -1,24 +1,21 @@
 import { SongCard } from "./SongCard";
-import {ViewAllCard} from "./ViewAllCard"
 
 export const SongSection = ({
   titleStart,
   titleHighlight,
   songs,
-  viewAllLink,
 }) => {
   return (
-    <section className="mt-12 mx-2.5">
-      <h2 className="text-2xl font-bold text-text-primary mb-5 ml-2">
+    <section className="mt-12 w-full px-4 sm:px-2 md:px-0">
+      <h2 className="text-xl sm:text-2xl font-bold text-text-primary mb-4 sm:mb-5">
         {titleStart}{" "}
         <span className="text-brand-primary">{titleHighlight}</span>
       </h2>
 
-      <div className="flex gap-5 pb-2 overflow-x-auto no-scrollbar">
+      <div className="pb-2 grid grid-cols-3 sm:grid-cols-4 gap-2 md:gap-5 lg:grid-cols-5">
         {songs?.map((song) => (
           <SongCard key={song.id} song={song} />
         ))}
-        <ViewAllCard to={viewAllLink} />
       </div>
     </section>
   );
