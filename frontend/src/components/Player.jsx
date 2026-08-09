@@ -15,7 +15,7 @@ import { formatTime } from "../utils/SongDuration.js";
 import { FavoriteButton } from "../components/FavoriteButton.jsx";
 import { AddToPlaylistButton } from "../components/AddToPlaylistButton.jsx";
 
-export const Player = ({song}) => {
+export const Player = ({ song }) => {
   const {
     currentSong,
     isPlaying,
@@ -113,15 +113,15 @@ export const Player = ({song}) => {
     <>
       <audio ref={audioRef} />
 
-      <div className="w-full m-auto h-22.5 bg-surface border-t rounded-t-3xl border-brand-light/40 px-5 flex items-center justify-between z-50 bottom-0 left-0">
-        <div className="flex items-center gap-4 max-w-45 min-w-45">
+      <div className="w-full m-auto h-20 sm:h-22.5 bg-surface border-t rounded-t-3xl border-brand-light/40 px-5 flex items-center justify-between z-50">
+        <div className="flex items-center gap-2 sm:gap-4 max-w-28 sm:max-w-45 min-w-0 sm:min-w-45">
           <img
             src={currentSong.coverArt}
             alt={currentSong.title}
-            className="w-14 h-14 rounded-md object-cover shadow-sm"
+            className="w-10 h-10 sm:w-14 sm:h-14 rounded-md object-cover shadow-sm"
           />
           <div className="flex flex-col justify-center ">
-            <p className="text-sm text-text-primary font-bold truncate max-w-37.5 cursor-pointer hover:underline">
+            <p className="text-xs sm:text-sm text-text-primary font-bold truncate max-w-[80px] sm:max-w-37.5 cursor-pointer hover:underline">
               {currentSong.title}
             </p>
             <p className="text-xs text-text-secondary truncate max-w-37.5 cursor-pointer hover:underline">
@@ -130,8 +130,8 @@ export const Player = ({song}) => {
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-center w-[40%] max-w-150 gap-2 m-auto">
-          <div className="flex items-center gap-6">
+        <div className="flex flex-col items-center justify-center flex-1 sm:flex-none sm:w-[40%] max-w-150 gap-2">
+          <div className="flex items-center gap-3 sm:gap-6">
             <FiShuffle
               onClick={shuffleQueue}
               className={`cursor-pointer text-lg transition 
@@ -148,7 +148,7 @@ export const Player = ({song}) => {
 
             <button
               onClick={() => setIsPlaying(!isPlaying)}
-              className="w-10 h-10 flex items-center justify-center bg-brand-primary text-white rounded-full hover:scale-105 hover:bg-brand-dark transition-all shadow-md shadow-brand-primary/30"
+              className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-brand-primary text-white rounded-full hover:scale-105 hover:bg-brand-dark transition-all shadow-md shadow-brand-primary/30"
             >
               {isPlaying ? (
                 <FiPause className="text-xl" />
@@ -164,8 +164,8 @@ export const Player = ({song}) => {
             <FiRepeat className="text-text-secondary hover:text-brand-primary cursor-pointer text-lg transition" />
           </div>
 
-          <div className="flex items-center gap-2 w-full">
-            <span className="text-xs text-text-secondary w-10 text-right font-medium">
+          <div className="flex items-center gap-2 w-full ">
+            <span className="text-xs text-text-secondary w-8 sm:w-10 text-right font-medium">
               {formatTime(progress)}
             </span>
             <input
@@ -182,7 +182,7 @@ export const Player = ({song}) => {
           </div>
         </div>
 
-        <div className="flex justify-center items-center gap-5 pr-5 mr-5">
+        <div className="flex justify-center items-center gap-2 sm:gap-5 pr-2 sm:pr-5">
           <FavoriteButton item={currentSong} type="song" />
           <div className="relative">
             <AddToPlaylistButton song={currentSong} />

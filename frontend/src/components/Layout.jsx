@@ -17,7 +17,7 @@ export const Layout = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-bg text-text-primary overflow-hidden">
+    <div className="flex flex-col h-screen h-dvh bg-bg text-text-primary overflow-hidden">
       <div className="flex flex-1 overflow-hidden min-h-0">
         <Sidebar isOpen={sidebarOpen} onClose={onClose} />
         

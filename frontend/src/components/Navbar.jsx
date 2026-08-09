@@ -102,7 +102,7 @@ export const Navbar = ({ onMenuClick }) => {
 
   return (
     <header
-      className={`w-full px-8 py-1.5 flex items-center justify-between sticky pointer-events-auto top-0 left-0 z-999 transition-all border-b border-brand-light/40 ${
+      className={`w-full px-4 sm:px-8 py-1.5 flex items-center justify-between sticky pointer-events-auto top-0 left-0 z-[999] transition-all border-b border-brand-light/40 ${
         scrolled
           ? "bg-surface backdrop-blur-3xl"
           : "bg-transparent backdrop-blur-3xl"
@@ -120,7 +120,7 @@ export const Navbar = ({ onMenuClick }) => {
         <form
           onSubmit={handleSubmit}
           ref={containerRef}
-          className="relative w-full max-w-80 group"
+          className="relative w-full max-w-full sm:max-w-80 group"
         >
           <input
             type="text"
@@ -138,7 +138,7 @@ export const Navbar = ({ onMenuClick }) => {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute top-full mt-2 w-full bg-surface border border-brand-light/40 rounded-xl shadow-xl max-h-96 overflow-y-auto z-1200">
+            <div className="absolute top-full mt-2 w-full bg-surface border border-brand-light/40 rounded-xl shadow-xl max-h-96 overflow-y-auto z-[1200]">
               {!hasAnyResults && (
                 <p className="px-4 py-3 text-sm text-text-secondary">
                   No results found.
@@ -230,7 +230,7 @@ export const Navbar = ({ onMenuClick }) => {
           <div className="flex items-center space-x-4">
             <button
               onClick={() => setAuthformOpen(true)}
-              className="border border-brand-primary text-text-secondary text-sm flex justify-center font-semibold px-6 py-2 rounded-2xl hover:bg-brand-light hover:text-white hover:border-none transition-all"
+              className="border border-brand-primary text-text-secondary text-sm flex justify-center font-semibold  px-3 sm:px-6 py-2 text-xs sm:text-sm rounded-2xl hover:bg-brand-light hover:text-white hover:border-none transition-all"
             >
               <FiUser className="mr-2 text-base" /> Join
             </button>

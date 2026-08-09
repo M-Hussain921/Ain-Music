@@ -1,4 +1,10 @@
-import React, { createContext, useState, useEffect, useContext,useRef } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+} from "react";
 import { mapRawSongToSongs } from "../utils/mapRawSong";
 import { authFetch } from "../utils/apiClient";
 import { AuthContext } from "./AuthContext";
@@ -11,8 +17,6 @@ const BACKEND_API = "http://localhost:4000/api/user";
 
 async function fetchSongsByQuery(query, limit = 10) {
   try {
-    console.log(`Trying to connect API Server: ${SAAVN_API}...`);
-
     const res = await fetch(
       `${SAAVN_API}/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`,
     );
@@ -22,7 +26,6 @@ async function fetchSongsByQuery(query, limit = 10) {
     const data = await res.json();
     const results = data?.data?.results || [];
     if (results.length === 0) return [];
-    console.log(results);
 
     return results.map(mapRawSongToSongs);
   } catch (error) {
@@ -53,12 +56,12 @@ async function fetchArtistByQuery(query, limit = 10) {
     if (!res.ok) throw new Error("Server down");
 
     const data = await res.json();
-   const results = Array.isArray(data?.data)
-  ? data.data
-  : data?.data?.results || [];
+    const results = Array.isArray(data?.data)
+      ? data.data
+      : data?.data?.results || [];
     if (results.length === 0) return [];
 
-     if (!Array.isArray(results) || results.length === 0) return [];
+    if (!Array.isArray(results) || results.length === 0) return [];
     return results.map((artist) => ({
       id: artist.id,
       name: artist.name,
@@ -106,9 +109,12 @@ async function fetchAlbumDetails(id) {
     const songs = (album.songs || []).map(mapRawSongToSongs);
     return {
       id: album.id,
-      title: album.name,
-      artist: album.primaryArtists || "Unknown Artist",
-      image: album.image?.[2]?.url || "https://via.placeholder.com/150",
+      title: album.name || album.title || "Unknown Album",
+      artist: album.primaryArtists || album.artists || "Unknown Artist",
+      image:
+        typeof album.image === "string"
+          ? album.image
+          : album.image?.[2]?.url || "https://via.placeholder.com/150",
       songs,
     };
   } catch (err) {
@@ -126,28 +132,45 @@ async function fetchArtistDetails(id) {
     const artist = data?.data;
     if (!artist) return null;
 
-    const bioText = (artist.bio || [])
-      .filter((b) => b?.text)
-      .sort((a, b) => (a.sequence || 0) - (b.sequence || 0))
-      .map((b) => b.text)
-      .join("\n\n");
+    const artistName = artist.name || artist.title || "Unknown Artist";
+    const artistImage =
+      typeof artist.image === "string"
+        ? artist.image
+        : artist.image?.[2]?.url || "https://via.placeholder.com/150";
 
-    const topSongs = (artist.topSongs || []).map(mapRawSongToSongs);
+    const bioText = Array.isArray(artist.bio)
+      ? artist.bio
+          .filter((b) => b?.text)
+          .sort((a, b) => (a.sequence || 0) - (b.sequence || 0))
+          .map((b) => b.text)
+          .join("\n\n")
+      : artist.bio || null;
+
+    const topSongs = Array.isArray(artist.topSongs)
+      ? artist.topSongs.map((s) => (s.coverArt ? s : mapRawSongToSongs(s)))
+      : [];
+
     const allSongs = (artist.songs || []).map(mapRawSongToSongs);
 
-    const topAlbums = (artist.topAlbums || []).map((album) => ({
-      id: album.id,
-      title: album.name,
-      artist: album.artists?.primary?.[0]?.name || "Unknown",
-      image: album.image?.[2]?.url || "https://via.placeholder.com/150",
-      songCount: album.songCount,
-    }));
+    const topAlbums = Array.isArray(artist.topAlbums)
+      ? artist.topAlbums.map((album) => ({
+          id: album.id,
+          title: album.title || album.name,
+          artist:
+            album.artist || album.artists?.primary?.[0]?.name || "Unknown",
+          image:
+            typeof album.image === "string"
+              ? album.image
+              : album.image?.[2]?.url || "https://via.placeholder.com/150",
+          songCount: album.songCount,
+        }))
+      : [];
 
     return {
       id: artist.id,
-      name: artist.name,
-      image: artist.image?.[2]?.url || "https://via.placeholder.com/150",
-      bio: bioText || null,
+      name: artistName,
+      image: artistImage,
+      bio: bioText,
       topSongs,
       topAlbums,
     };
@@ -306,10 +329,10 @@ export function MusicProvider({ children }) {
     try {
       const [weeklyTop, newReleases, trendingAlbums, newReleaseAlbums] =
         await Promise.all([
-          fetchSongsByQuery("trending bollywood", 5),
-          fetchSongsByQuery("New bollywood", 5),
-          fetchAlbumsByQuery("trending bollywood", 7),
-          fetchAlbumsByQuery("new bollywood", 7),
+          fetchSongsByQuery("trending bollywood", 10),
+          fetchSongsByQuery("New bollywood", 10),
+          fetchAlbumsByQuery("trending bollywood", 10),
+          fetchAlbumsByQuery("new bollywood", 10),
         ]);
 
       const internationalArtists = [
@@ -327,22 +350,19 @@ export function MusicProvider({ children }) {
         "Neha Kakkar",
         "Haney singh",
         "Amitabh Bhattacharya",
+        "A.R. Rahman",
+        "KK singer",
       ];
 
-      const queries = [...internationalArtists, ...indianArtists];
+      const queries = [...indianArtists];
 
-     const artistsResults = await runInBatches(
-  queries,
-  2,
-  (name) => fetchArtistByQuery(name, 1)
-);
-      
+      const artistsResults = await runInBatches(queries, 2, (name) =>
+        fetchArtistByQuery(name, 1),
+      );
 
-const albumsResults = await runInBatches(
-  queries,
-  2,
-  (name) => fetchAlbumsByQuery(name, 1)
-);
+      const albumsResults = await runInBatches(queries, 1, (name) =>
+        fetchAlbumsByQuery(name, 2),
+      );
 
       const popularArtist = artistsResults.flat();
       const topAlbums = albumsResults.flat();
@@ -359,6 +379,7 @@ const albumsResults = await runInBatches(
         "Neha Kakkar",
         "A.R. Rahman",
         "Jubin Nautiyal",
+        "Ed Sheeran",
         "KK singer",
         "Mohit Chauhan",
         "Divine rapper",
@@ -371,11 +392,10 @@ const albumsResults = await runInBatches(
         "Darshan Raval",
         "Neeti Mohan",
         "Sunidhi Chauhan",
-        "Vishal Mishra singer",
         "Anuv Jain",
         "Prateek Kuhad",
-        "Atif Aslam",
-        "Rahat Fateh Ali Khan",
+        "Sachet Tandon",
+        "Jonita Gandhi",
         "Shaan singer",
         "Kailash Kher",
         "Javed Ali",
@@ -386,15 +406,19 @@ const albumsResults = await runInBatches(
         "B Praak",
         "Ammy Virk",
         "Jassie Gill",
+        "Gippy Grewal",
+        "Nakash Aziz",
+        "Jasleen Royal",
         "Karan Aujla",
-        "Nusrat Fateh Ali Khan",
         "Shankar Mahadevan",
         "Ilaiyaraaja",
         "Anirudh Ravichander",
         "Sid Sriram",
         "Amit Trivedi",
         "Pritam composer",
-        "Papon singer",
+        "Lata Mangeshkar",
+        "Kishore Kumar",
+        "Mukesh singer",
         "Ankit Tiwari",
         "Tulsi Kumar",
         "Palak Muchhal",
@@ -448,90 +472,84 @@ const albumsResults = await runInBatches(
   };
 
   const toggleFavorite = async (item, type, token, extra = {}) => {
-  try {
-    let url = "";
-    let body = {};
+    try {
+      let url = "";
+      let body = {};
 
-    switch (type) {
-      case "song":
-        url = `${BACKEND_API}/liked-song`;
-        body = { songId: item.id };
-        break;
+      switch (type) {
+        case "song":
+          url = `${BACKEND_API}/liked-song`;
+          body = { songId: item.id };
+          break;
 
-      case "artist":
-        url = `${BACKEND_API}/liked-artist`;
-        body = { artistId: item.id };
-        break;
+        case "artist":
+          url = `${BACKEND_API}/liked-artist`;
+          body = { artistId: item.id };
+          break;
 
-      case "album":
-        url = `${BACKEND_API}/liked-playlist`; 
-        body = { playlistId: item.id };
-        break;
+        case "album":
+          url = `${BACKEND_API}/liked-playlist`;
+          body = { playlistId: item.id };
+          break;
 
-      case "playlist-song":
-        url = `${BACKEND_API}/my-playlist`;
-        body = {
-          playlistId: extra.playlistId,
-          songId: item.id,
-        };
-        break;
+        case "playlist-song":
+          url = `${BACKEND_API}/my-playlist`;
+          body = {
+            playlistId: extra.playlistId,
+            songId: item.id,
+          };
+          break;
 
-      default:
-        throw new Error("Invalid favorite type");
+        default:
+          throw new Error("Invalid favorite type");
+      }
+
+      const data = await authFetch(url, token, {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+
+      switch (type) {
+        case "song":
+          setFavorites((prev) =>
+            data.liked ? [...prev, item] : prev.filter((i) => i.id !== item.id),
+          );
+          break;
+
+        case "artist":
+          setFavArtists((prev) =>
+            data.liked ? [...prev, item] : prev.filter((i) => i.id !== item.id),
+          );
+          break;
+
+        case "album":
+          setFavAlbums((prev) =>
+            data.liked ? [...prev, item] : prev.filter((i) => i.id !== item.id),
+          );
+          break;
+
+        case "playlist-song":
+          setPlaylists((prev) =>
+            prev.map((pl) => {
+              if (pl._id !== extra.playlistId) return pl;
+
+              return {
+                ...pl,
+                songs: data.liked
+                  ? [...pl.songs, item.id]
+                  : pl.songs.filter((id) => id !== item.id),
+              };
+            }),
+          );
+          break;
+
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error("toggle favorite error:", error);
     }
-
-    const data = await authFetch(url, token, {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-
-    switch (type) {
-      case "song":
-        setFavorites((prev) =>
-          data.liked
-            ? [...prev, item]
-            : prev.filter((i) => i.id !== item.id)
-        );
-        break;
-
-      case "artist":
-        setFavArtists((prev) =>
-          data.liked
-            ? [...prev, item]
-            : prev.filter((i) => i.id !== item.id)
-        );
-        break;
-
-      case "album":
-        setFavAlbums((prev) =>
-          data.liked
-            ? [...prev, item]
-            : prev.filter((i) => i.id !== item.id)
-        );
-        break;
-
-      case "playlist-song":
-        setPlaylists((prev) =>
-          prev.map((pl) => {
-            if (pl._id !== extra.playlistId) return pl;
-
-            return {
-              ...pl,
-              songs: data.liked
-                ? [...pl.songs, item.id]
-                : pl.songs.filter((id) => id !== item.id),
-            };
-          })
-        );
-        break;
-
-      default:
-        break;
-    }
-  } catch (error) {
-    console.error("toggle favorite error:", error);
-  }
-};
+  };
 
   const createPlaylist = async (name, token) => {
     try {
@@ -568,10 +586,10 @@ const albumsResults = await runInBatches(
   // };
 
   useEffect(() => {
-  if (didLoadRef.current) return;
-  didLoadRef.current = true;
-  loadHomePageContent();
-}, []);
+    if (didLoadRef.current) return;
+    didLoadRef.current = true;
+    loadHomePageContent();
+  }, []);
 
   useEffect(() => {
     if (!token) return;
@@ -586,8 +604,9 @@ const albumsResults = await runInBatches(
           ]);
         setFavorites(songsData.data.map(mapRawSongToSongs));
         setFavArtists(artistsData.data);
-        console.log("playlistsData.data:", playlistsData);
-        setFavAlbums(playlistsData.data.map(mapRawSongToSongs));
+        const albumsData =
+          playlistsData?.data?.data || playlistsData?.data || [];
+        setFavAlbums(Array.isArray(albumsData) ? albumsData : []);
         setPlaylists(myPlaylistsData.data);
       } catch (error) {
         console.error("fetch user data error:", error);
@@ -606,6 +625,8 @@ const albumsResults = await runInBatches(
         currentIndex,
         isPlaying,
         setIsPlaying,
+        favArtists,
+        favAlbums,
         favorites,
         toggleFavorite,
         playlists,
@@ -634,7 +655,7 @@ const albumsResults = await runInBatches(
         // toggleFavAlbum,
         // toggleFavArtist,
         fetchSongById,
-        toggleFavorite
+        toggleFavorite,
       }}
     >
       {children}
