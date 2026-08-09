@@ -7,7 +7,7 @@ export const AddToPlaylistButton = ({ song }) => {
 
   return (
     <button onClick={() => addSongToPlaylist(song)}>
-      <FiPlusCircle className="text-text-secondary mt-1.5 hover:text-brand-primary cursor-pointer text-lg transition" />
+      <FiPlusCircle className="text-text-secondary hover:text-brand-primary cursor-pointer text-base sm:text-lg transition self-center" />
     </button>
   );
 };

@@ -21,31 +21,13 @@ export const Sidebar = ({ isOpen, onClose, setSidebarOpen }) => {
 
   const menuSections = [
     {
-      title: "Menu",
       links: [
         { name: "Home", icon: <FiHome />, to: "/" },
         { name: "Albums", icon: <FiDisc />, to: "/albums" },
         { name: "Artists", icon: <FiUsers />, to: "/artists" },
-      ],
-    },
-    {
-      title: "Library",
-      links: [
-        { name: "Recently Added", icon: <FiClock />, to: "/recently-added" },
-        { name: "Most Played", icon: <FiActivity />, to: "/most-played" },
-      ],
-    },
-    {
-      title: "Playlist and favorites",
-      links: [
         { name: "My Playlist", icon: <FiList />, to: "/your-playlists" },
         { name: "My Favorites", icon: <FiHeart />, to: "/your-favorites" },
-        { name: "Add Playlist", icon: <FiPlus />, to: "/add-playlist" },
       ],
-    },
-    {
-      title: "General",
-      links: [{ name: "Settings", icon: <FiSettings />, to: "/settings" }],
     },
   ];
 
@@ -68,9 +50,6 @@ export const Sidebar = ({ isOpen, onClose, setSidebarOpen }) => {
         <div className="flex flex-col space-y-3 sm:space-y-5">
           {menuSections.map((section, sIndex) => (
             <div key={sIndex}>
-              <p className="text-xs font-semibold text-brand-light/60 uppercase tracking-widest mb-1 px-1">
-                {section.title}
-              </p>
               <ul className="space-y-1">
                 {section.links.map((link, lIndex) => (
                   <li key={lIndex}>
@@ -81,7 +60,7 @@ export const Sidebar = ({ isOpen, onClose, setSidebarOpen }) => {
                       className={({ isActive }) =>
                         `flex items-center px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm md:text-base truncate cursor-pointer transition-all duration-300 rounded-xl font-medium ${
                           isActive
-                            ? "text-white bg-brand-primary shadow-lg shadow-brand-primary/30"
+                            ? "text-white bg-brand-primary"
                             : "text-text-secondary hover:text-text-primary hover:bg-brand-light/30"
                         }`
                       }

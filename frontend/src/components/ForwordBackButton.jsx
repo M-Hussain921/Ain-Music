@@ -8,7 +8,7 @@ export const ForwardBackButton = () => {
       onClick={() => navigate(-1)}
       className="mb-4 flex items-center gap-2 text-text-secondary hover:text-text-primary"
     >
-      <FiArrowLeft /> Back
+      <FiArrowLeft />
     </button>
   );
 };

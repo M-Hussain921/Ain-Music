@@ -38,14 +38,14 @@ export const FavoriteButton = ({ item, type }) => {
   return (
     <button
       onClick={handleClick}
-      className={`w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center sm:hover:scale-105 sm:hover:bg-brand-dark  text-white rounded-full hover:scale-105 hover:bg-brand-dark transition-all shadow-sm sm:shadow-md shadow-brand-primary/20 sm:shadow-brand-primary/30 disabled:opacity-60 ${isFavorite ? "bg-black/30 sm:bg-transparent" : "bg-brand-primary"}`}
+      className={`w-6 h-6 xs:w-8 xs:h-8 sm:w-10 sm:h-10 flex items-center justify-center sm:hover:scale-105 sm:hover:bg-brand-dark  text-white rounded-full hover:scale-105 hover:bg-brand-dark transition-all disabled:opacity-60 ${isFavorite ? "bg-black/30 sm:bg-transparent" : "bg-brand-primary"}`}
     >
       {isFavorite ? (
         <FaHeart
-          className={`text-sm sm:text-lg transition ${isFavorite ? " fill-brand-primary scale-110" : "text-text-secondary hover:text-text-primary"}`}
+          className={`text-xs xs:text-sm sm:text-lg transition ${isFavorite ? " fill-brand-primary scale-110" : "text-text-secondary hover:text-text-primary"}`}
         />
       ) : (
-        <FaRegHeart />
+       <FaRegHeart className="text-xs xs:text-sm sm:text-lg" />
       )}
     </button>
   );

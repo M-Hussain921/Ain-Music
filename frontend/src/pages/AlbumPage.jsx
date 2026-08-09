@@ -66,7 +66,7 @@ export const AlbumPage = () => {
         navigate={navigate}
       />
       <div>
-        <h2 className="m-auto text-center text-text-secondary text-xl font-semibold font-mono mt-10">
+        <h2 className="m-auto text-center text-text-secondary text-base sm:text-xl font-semibold mt-10 px-2">
           ----- Loop it. Live it. -----
         </h2>
       </div>

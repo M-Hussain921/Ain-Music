@@ -25,10 +25,10 @@ export const SongsList = ({
           <div
             key={song.id}
             onClick={() => onSongClick(song, index)}
-            className="flex items-center gap-2 sm:gap-4 px-3 sm:px-5 py-2 rounded-lg hover:bg-brand-light cursor-pointer group"
+            className="flex items-center gap-1.5 sm:gap-4 px-2 sm:px-5 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dark cursor-pointer group w-full min-w-0"
           >
             {showIndex && (
-              <span className="w-6 text-text-secondary text-sm text-center relative flex items-center justify-center shrink-0">
+              <span className="w-5 sm:w-6 text-text-secondary text-xs sm:text-sm text-center relative flex items-center justify-center shrink-0">
                 <span className={`${isThisSongPlaying ? "hidden" : "group-hover:hidden"}`}>
                   {index + 1}
                 </span>
@@ -42,10 +42,10 @@ export const SongsList = ({
               <img 
                 src={song.coverArt} 
                 alt={song.title} 
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded object-cover shrink-0" 
+                className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded object-cover shrink-0" 
               />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-text-primary truncate">
+              <div className="flex-1 min-w-0 ">
+                <p className="text-xs xs:text-sm font-medium text-text-primary truncate">
                   {song.title}
                 </p>
                 <p className="text-xs text-text-secondary truncate">
@@ -54,10 +54,10 @@ export const SongsList = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-5 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-5 shrink-0">
               {showFavorite && <FavoriteButton item={song} type="song" />}
               {showDuration && (
-                <div className="text-xs text-text-secondary w-10 text-left font-medium">
+                <div className="text-[10px] sm:text-xs text-text-secondary w-8 sm:w-10 text-left font-medium">
                   {formatTime(song.duration)}
                 </div>
               )}

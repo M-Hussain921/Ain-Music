@@ -230,7 +230,7 @@ export const Navbar = ({ onMenuClick }) => {
           <div className="flex items-center space-x-4">
             <button
               onClick={() => setAuthformOpen(true)}
-              className="border border-brand-primary text-text-secondary text-sm flex justify-center font-semibold  px-2.5 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm whitespace-nowrap rounded-2xl hover:bg-brand-light hover:text-white hover:border-none transition-all"
+              className="text-text-secondary text-sm flex justify-center font-semibold  px-2.5 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm whitespace-nowrap rounded-2xl hover:bg-brand-light hover:text-white hover:border-none transition-all"
             >
               <FiUser className="mr-2 text-base" /> Join
             </button>

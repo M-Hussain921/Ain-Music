@@ -21,7 +21,7 @@ export const Layout = () => {
       <div className="flex flex-1 overflow-hidden min-h-0">
         <Sidebar isOpen={sidebarOpen} onClose={onClose} />
         
-        <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex-1 flex flex-col min-h-0 min-w-0">
           <Navbar onMenuClick={onMenuClick} />
           
           <main className="flex-1 overflow-y-auto flex flex-col">

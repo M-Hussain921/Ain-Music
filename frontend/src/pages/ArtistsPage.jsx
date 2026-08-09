@@ -5,7 +5,7 @@ import { MusicContext } from "../context/MusicContext";
 export const ArtistGrid = ({ title, artists, navigate }) => {
   if (!artists || artists.length === 0) return null;
   return (
-    <div className="mb-6 sm:mb-10">
+    <div className="mb-6 sm:mb-10 ">
       <h2 className="text-xl font-bold mb-6 text-text-primary">{title}</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-5">
         {artists.map((artist) => (
@@ -42,7 +42,7 @@ export const ArtistsPage = () => {
         artists={homeContent.allArtists}
         navigate={navigate}
       />
-      <div className="m-auto text-center text-text-secondary text-xl font-semibold font-mono">
+      <div className="m-auto text-center text-text-secondary text-base sm:text-xl font-semibold mt-10 px-2 ">
         <h2>----- Every note tells a story. -----</h2>
       </div>
     </div>

@@ -45,29 +45,35 @@ export const ArtistDetailPage = () => {
 
   return (
     <div className="p-4 sm:p-6 ">
-      <ForwardBackButton />
+     
 
-      <div className="flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8 text-center sm:text-left">
-        <img
-          src={artist.image}
-          className="w-28 h-28 sm:w-40 sm:h-40 rounded-full object-cover"
-        />
-        <div>
-          <h1 className="text-xl sm:text-3xl font-bold">{artist.name}</h1>
-          <div className="mt-3 flex items-center justify-center sm:justify-start gap-3">
-            <button
-              onClick={() =>
-                artist.topSongs.length &&
-                playArtistSongs(artist.topSongs, 0, artist.id)
-              }
-              className="px-4 py-1.5 sm:px-5 sm:py-2 text-sm sm:text-base bg-brand-primary text-white rounded-full font-semibold hover:scale-105 transition"
-            >
-              Play All
-            </button>
-            <FavoriteButton item={artist} type="artist" />
-          </div>
-        </div>
-      </div>
+      <div className="relative flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8 text-center sm:text-left pt-10 pb-5 sm:pt-12 sm:pb-3">
+  <div className="absolute z-10 left-0 top-0">
+    <ForwardBackButton />
+  </div>
+   
+  <div className="absolute inset-0 pointer-events-none z-0 bg-[linear-gradient(90deg,transparent_24%,rgba(101,171,196,.06)_25%,rgba(101,171,196,.06)_26%,transparent_27%,transparent_74%,rgba(101,171,196,.06)_75%,rgba(101,171,196,.06)_76%,transparent_77%,transparent),linear-gradient(0deg,transparent_24%,rgba(101,171,196,.06)_25%,rgba(101,171,196,.06)_26%,transparent_27%,transparent_74%,rgba(101,171,196,.06)_75%,rgba(101,171,196,.06)_76%,transparent_77%,transparent)] bg-[length:50px_50px]" />
+
+  <img
+    src={artist.image}
+    className="relative z-10 w-28 h-28 sm:w-40 sm:h-40 rounded-full object-cover"
+  />
+  <div className="relative z-10">
+    <h1 className="text-xl sm:text-3xl font-bold">{artist.name}</h1>
+    <div className="mt-3 flex items-center justify-center sm:justify-start gap-3">
+      <button
+        onClick={() =>
+          artist.topSongs.length &&
+          playArtistSongs(artist.topSongs, 0, artist.id)
+        }
+        className="px-4 py-1.5 sm:px-5 sm:py-2 text-sm sm:text-base bg-brand-primary text-white rounded-full font-semibold hover:scale-105 transition"
+      >
+        Play All
+      </button>
+      <FavoriteButton item={artist} type="artist" />
+    </div>
+  </div>
+</div>
 
       <div className="flex gap-4 sm:gap-6 border-b border-brand-light/30 mb-4 sm:mb-6 overflow-x-auto no-scrollbar">
         {tabs.map((tab) => (
@@ -109,7 +115,7 @@ export const ArtistDetailPage = () => {
       )}
 
       <div>
-        <h2 className="m-auto text-center text-text-secondary text-xl font-semibold font-mono mt-8 sm:mt-10">
+        <h2 className="m-auto text-center text-text-secondary text-base sm:text-xl font-semibold mt-10 px-2">
           ----- Loop it. Live it. -----
         </h2>
       </div>
