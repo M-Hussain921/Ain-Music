@@ -102,7 +102,7 @@ export const Navbar = ({ onMenuClick }) => {
 
   return (
     <header
-      className={`w-full px-4 sm:px-8 py-1.5 flex items-center justify-between sticky pointer-events-auto top-0 left-0 z-[999] transition-all border-b border-brand-light/40 ${
+      className={`px-4 sm:px-8 py-1.5 flex items-center justify-between sticky pointer-events-auto top-0 left-0 z-[999] transition-all border-b border-brand-light/40 ${
         scrolled
           ? "bg-surface backdrop-blur-3xl"
           : "bg-transparent backdrop-blur-3xl"
@@ -120,7 +120,7 @@ export const Navbar = ({ onMenuClick }) => {
         <form
           onSubmit={handleSubmit}
           ref={containerRef}
-          className="relative w-full max-w-full sm:max-w-80 group"
+          className="relative flex-1 max-w-xs sm:max-w-80 group"
         >
           <input
             type="text"
@@ -223,7 +223,7 @@ export const Navbar = ({ onMenuClick }) => {
           )}
         </form>
         {token ? (
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 shrink-0">
             <LogoutButton onClick={() => logOut()} className="mr-2 text-base" />
           </div>
         ) : (

@@ -44,7 +44,7 @@ export const ArtistDetailPage = () => {
   ];
 
   return (
-    <div className="p-4 sm:p-6">
+    <div className="p-4 sm:p-6 ">
       <ForwardBackButton />
 
       <div className="flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8 text-center sm:text-left">
@@ -60,7 +60,7 @@ export const ArtistDetailPage = () => {
                 artist.topSongs.length &&
                 playArtistSongs(artist.topSongs, 0, artist.id)
               }
-              className=" px-5 py-2 bg-brand-primary text-white rounded-full font-semibold hover:scale-105 transition"
+              className="px-4 py-1.5 sm:px-5 sm:py-2 text-sm sm:text-base bg-brand-primary text-white rounded-full font-semibold hover:scale-105 transition"
             >
               Play All
             </button>
@@ -109,7 +109,7 @@ export const ArtistDetailPage = () => {
       )}
 
       <div>
-        <h2 className="m-auto text-center text-text-secondary text-xl font-semibold font-mono mt-10">
+        <h2 className="m-auto text-center text-text-secondary text-xl font-semibold font-mono mt-8 sm:mt-10">
           ----- Loop it. Live it. -----
         </h2>
       </div>

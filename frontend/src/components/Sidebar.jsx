@@ -57,7 +57,7 @@ export const Sidebar = ({ isOpen, onClose, setSidebarOpen }) => {
 
       <aside
         ref={sidebarRef}
-        className={`w-48 sm:w-64 sm:w-64 bg-surface h-screen h-dvh text-text-secondary p-2.5 sm:p-4 flex flex-col border-r border-brand-light/30 overflow-y-auto 
+        className={`w-44 sm:w-60 bg-surface h-screen h-dvh text-text-secondary p-2.5 sm:p-4 flex flex-col border-r border-brand-light/30 overflow-y-auto 
           fixed top-0 left-0 z-[1001] transition-transform duration-300
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
           lg:static lg:translate-x-0 lg:z-auto`}

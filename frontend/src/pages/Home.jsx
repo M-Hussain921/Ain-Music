@@ -15,8 +15,8 @@ export const Home = () => {
   }, []);
 
   return (
-    <div className="relative">
-      <section className="relative min-h-[70vh] sm:min-h-[80vh] md:min-h-screen flex items-end overflow-hidden bg-black isolate">
+    <div className="relative ">
+      <section className="relative  min-h-[70vh] sm:min-h-[80vh] md:min-h-screen flex items-end overflow-hidden bg-black isolate">
         
         <div className="absolute inset-0 z-0 overflow-hidden">
           <img
@@ -31,7 +31,7 @@ export const Home = () => {
           <div className="absolute inset-0 bg-black/20" />
         </div>
 
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 md:pb-28">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 md:px-6 xl:px-12 pb-12 sm:pb-20 md:pb-28">
           <div className="max-w-3xl">
 
             <h1
@@ -57,9 +57,7 @@ export const Home = () => {
             </p>
 
             <div
-              className={`mt-6 sm:mt-10 flex items-stretch sm:items-center gap-3 sm:gap-4 transition-all duration-1000 delay-700${
-                loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
+              className={`mt-6 sm:mt-10 flex items-stretch sm:items-center gap-3 sm:gap-4 transition-all duration-1000 delay-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
             >
               <button className="group relative max-w-max sm:w-auto text-center px-5 py-2.5 sm:px-8 sm:py-3.5 bg-brand-primary text-white font-semibold rounded-xl overflow-hidden transition-all hover:scale-105 hover:shadow-lg hover:shadow-brand-primary/25 active:scale-95">
                 <span className="relative z-10 text-sm sm:text-base">Discover Now</span>
@@ -75,7 +73,7 @@ export const Home = () => {
         </div>
       </section>
 
-      <div className="px-0 sm:px-3 py-2 sm:py-12 space-y-8 sm:space-y-14 md:space-y-16">
+      <div className="py-2 sm:py-12 space-y-8 sm:space-y-14 md:space-y-16">
         <SongSection
           titleStart="Weekly Top"
           titleHighlight="Songs"

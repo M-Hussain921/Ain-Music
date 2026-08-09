@@ -25,7 +25,7 @@ export const SongsList = ({
           <div
             key={song.id}
             onClick={() => onSongClick(song, index)}
-            className="flex items-center gap-2 sm:gap-4 px-2 sm:px-5 py-2 rounded-lg hover:bg-brand-light cursor-pointer group"
+            className="flex items-center gap-2 sm:gap-4 px-3 sm:px-5 py-2 rounded-lg hover:bg-brand-light cursor-pointer group"
           >
             {showIndex && (
               <span className="w-6 text-text-secondary text-sm text-center relative flex items-center justify-center shrink-0">

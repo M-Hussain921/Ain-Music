@@ -1,7 +1,7 @@
 import brandLogo from "../assets/brand-logo2.png";
 export const Footer = () => {
   return (
-    <footer className="flex flex-col md:flex-row items-center justify-between pt-6 pb-2 px-4 gap-2 md:gap-1">
+    <footer className="flex flex-col md:flex-row items-center justify-between pt-6 pb-3 px-4 gap-2 md:gap-1">
       <div className="text-text-primary flex flex-row  items-center gap-1">
         <div>
           <img src={brandLogo} alt="Brand Logo" className="md:w-32 w-20 h-auto" />

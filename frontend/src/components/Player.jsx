@@ -113,8 +113,8 @@ export const Player = ({ song }) => {
     <>
       <audio ref={audioRef} />
 
-      <div className="w-full m-auto h-20 sm:h-22.5 bg-surface border-t rounded-t-3xl border-brand-light/40 px-5 flex items-center justify-between z-50">
-        <div className="flex items-center gap-2 sm:gap-4 max-w-28 sm:max-w-45 min-w-0 sm:min-w-45">
+      <div className="w-full m-auto h-20 sm:h-[5.625rem]  bg-surface border-t rounded-t-3xl border-brand-light/40 px-2 sm:px-5 flex items-center justify-between gap-2 sm:gap-3 z-[950]">
+        <div className="flex items-center gap-2 sm:gap-4 max-w-28 sm:max-w-45 min-w-0 sm:min-w-45 flex-shrink-0">
           <img
             src={currentSong.coverArt}
             alt={currentSong.title}
@@ -131,7 +131,7 @@ export const Player = ({ song }) => {
         </div>
 
         <div className="flex flex-col items-center justify-center flex-1 sm:flex-none sm:w-[40%] max-w-150 gap-2">
-          <div className="flex items-center gap-3 sm:gap-6">
+          <div className="flex items-center gap-2 sm:gap-6">
             <FiShuffle
               onClick={shuffleQueue}
               className={`cursor-pointer text-lg transition 
@@ -182,7 +182,7 @@ export const Player = ({ song }) => {
           </div>
         </div>
 
-        <div className="flex justify-center items-center gap-2 sm:gap-5 pr-2 sm:pr-5">
+        <div className="flex justify-center items-center gap-2 sm:gap-5 pr-2 sm:pr-5 shrink-0">
           <FavoriteButton item={currentSong} type="song" />
           <div className="relative">
             <AddToPlaylistButton song={currentSong} />

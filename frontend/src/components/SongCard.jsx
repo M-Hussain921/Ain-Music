@@ -12,7 +12,7 @@ export const SongCard = ({ song }) => {
         />
         <div className="absolute inset-0 bg-black/40 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
-        <div className="absolute bottom-1 right-1.5 sm:right-3 flex gap-1.5 sm:gap-3 md:gap-4 opacity-100 sm:opacity-0 group-hover:opacity-100">
+        <div className="absolute bottom-2 right-2 sm:right-3 flex gap-2 sm:gap-3 md:gap-4 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 z-10">
           <FavoriteButton item={song} type="song" />
           <PlayButton song={song} />
         </div>

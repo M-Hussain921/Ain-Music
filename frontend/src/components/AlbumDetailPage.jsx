@@ -5,6 +5,8 @@ import { FiArrowLeft, FiPlay, FiPause } from "react-icons/fi";
 import { PlayButton } from "./AudioPlayButton.jsx";
 import { formatTime } from "../utils/SongDuration.js";
 import { FavoriteButton } from "./FavoriteButton.jsx";
+import { SongsList } from "./SongsList.jsx";
+import { ForwardBackButton } from "./ForwordBackButton.jsx";
 
 export const AlbumDetailPage = () => {
   const { id } = useParams();
@@ -28,6 +30,7 @@ export const AlbumDetailPage = () => {
     const loadAlbum = async () => {
       setLoading(true);
       const data = await fetchAlbumDetails(id);
+      console.log("Fetched album details:", data);
       if (isMounted) {
         setAlbum(data);
         setLoading(false);
@@ -42,15 +45,15 @@ export const AlbumDetailPage = () => {
   }, [id]);
 
   if (loading) {
-    return <div className="p-6 text-text-primary">Loading album...</div>;
+    return <div className="p-4 sm:p-6 text-text-primary">Loading album...</div>;
   }
 
   if (!album) {
-    return <div className="p-6 text-text-primary">Album not found</div>;
+    return <div className="p-4 sm:p-6 text-text-primary">Album not found</div>;
   }
 
   const handlePlayAll = () => {
-    playAlbum(album.songs, 0);
+    playAlbum(album.songs, 0); 
   };
 
   const handleSongClick = (index) => {
@@ -70,25 +73,20 @@ export const AlbumDetailPage = () => {
   );
 
   return (
-    <div className="p-6">
-      <button
-        onClick={() => navigate(-1)}
-        className="mb-4 flex items-center gap-2 text-text-secondary hover:text-text-primary"
-      >
-        <FiArrowLeft /> Back
-      </button>
+    <div className="p-4 sm:p-6">
+      <ForwardBackButton />
 
-      <div className="flex items-end gap-6 mb-8">
+      <div className="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 mb-6 sm:mb-8 text-center sm:text-left">
         <img
           src={album.image}
           alt={album.title}
-          className="w-40 h-40 rounded-xl object-cover shadow-lg"
+          className="w-32 h-32 sm:w-40 sm:h-40 rounded-xl object-cover shadow-lg"
         />
         <div>
           <p className="text-xs uppercase text-text-secondary tracking-wide">
             Album
           </p>
-          <h1 className="text-3xl font-bold text-text-primary">
+          <h1 className="text-xl sm:text-3xl font-bold text-text-primary">
             {album.title}
           </h1>
           <p className="text-text-secondary mt-1">
@@ -97,66 +95,19 @@ export const AlbumDetailPage = () => {
 
           <button
             onClick={handlePlayAll}
-            className="mt-4 flex items-center gap-2 bg-brand-primary text-white px-5 py-2 rounded-full hover:scale-105 transition-all"
+          className="mt-4 flex items-center justify-center sm:justify-start gap-2 bg-brand-primary text-white px-4 py-1.5 sm:px-5 sm:py-2 text-sm sm:text-base rounded-full hover:scale-105 transition-all mx-auto sm:mx-0"
           >
             <FiPlay /> Play All
           </button>
         </div>
       </div>
 
-      <div className="flex flex-col">
-        {album.songs.map((song, index) => {
-          const isThisSongPlaying = currentSong?.id === song.id && isPlaying;
-
-          return (
-            <div
-              key={song.id}
-              onClick={() => handleSongClick(index)}
-              className="flex items-center gap-4 px-5 py-2 rounded-lg hover:bg-brand-light cursor-pointer group"
-            >
-              <span className="w-6 text-text-secondary text-sm text-center relative flex items-center justify-center">
-                <span
-                  className={`${
-                    isThisSongPlaying ? "hidden" : "group-hover:hidden"
-                  }`}
-                >
-                  {index + 1}
-                </span>
-                <span
-                  className={`absolute ${
-                    isThisSongPlaying
-                      ? "opacity-100"
-                      : "opacity-0 group-hover:opacity-100"
-                  } transition-opacity`}
-                >
-                  <PlayButton song={song} />
-                </span>
-              </span>
-              <div className="flex items-center gap-3 flex-1 ml-3">
-                <img
-                  src={song.coverArt}
-                  alt={song.title}
-                  className="w-10 h-10 rounded object-cover"
-                />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-text-primary truncate">
-                    {song.title}
-                  </p>
-                  <p className="text-xs text-text-secondary truncate">
-                    {song.artist}
-                  </p>
-                </div>
-                <div className="flex items-center gap-5">
-                  <FavoriteButton song={song} />
-                  <div className="text-xs text-text-secondary w-10 text-left font-medium">
-                    {formatTime(song.duration)}
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <SongsList
+        songs={album.songs}
+        currentSong={currentSong}
+        isPlaying={isPlaying}
+        onSongClick={(song, index) => handleSongClick(index)}
+      />
     </div>
   );
 };
