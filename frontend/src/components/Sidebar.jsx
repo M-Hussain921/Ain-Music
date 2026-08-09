@@ -60,7 +60,7 @@ export const Sidebar = ({ isOpen, onClose, setSidebarOpen }) => {
         className={`w-44 sm:w-60 bg-surface h-screen h-dvh text-text-secondary p-2.5 sm:p-4 flex flex-col border-r border-brand-light/30 overflow-y-auto 
           fixed top-0 left-0 z-[1001] transition-transform duration-300
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
-          lg:static lg:translate-x-0 lg:z-auto`}
+          md:static md:translate-x-0 md:z-auto`}
       >
         <div className="mb-3 p-2">
           <img src={BrandLogo} alt="Ain Music" className="w-32 sm:w-full h-auto mx-auto" />
@@ -79,7 +79,7 @@ export const Sidebar = ({ isOpen, onClose, setSidebarOpen }) => {
                       end={link.to === "/"}
                       onClick={onClose}
                       className={({ isActive }) =>
-                        `flex items-center px-2.5 sm:px-3 py-1 sm:py-1.5 text-sm sm:text-base cursor-pointer transition-all duration-300 rounded-xl font-medium ${
+                        `flex items-center px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm md:text-base truncate cursor-pointer transition-all duration-300 rounded-xl font-medium ${
                           isActive
                             ? "text-white bg-brand-primary shadow-lg shadow-brand-primary/30"
                             : "text-text-secondary hover:text-text-primary hover:bg-brand-light/30"

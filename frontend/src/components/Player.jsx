@@ -113,8 +113,8 @@ export const Player = ({ song }) => {
     <>
       <audio ref={audioRef} />
 
-      <div className="w-full m-auto h-20 sm:h-[5.625rem]  bg-surface border-t rounded-t-3xl border-brand-light/40 px-2 sm:px-5 flex items-center justify-between gap-2 sm:gap-3 z-[950]">
-        <div className="flex items-center gap-2 sm:gap-4 max-w-28 sm:max-w-45 min-w-0 sm:min-w-45 flex-shrink-0">
+      <div className="w-full m-auto h-auto min-h-20 sm:h-[5.625rem] py-1.5 sm:py-0  bg-surface border-t rounded-t-3xl border-brand-light/40 px-2 sm:px-5 flex items-center justify-between gap-2 sm:gap-3 z-[950]">
+        <div className="flex items-center gap-2 sm:gap-4 max-w-20 xs:max-w-28 sm:max-w-45 min-w-0 sm:min-w-45 flex-shrink-0">
           <img
             src={currentSong.coverArt}
             alt={currentSong.title}
@@ -131,7 +131,7 @@ export const Player = ({ song }) => {
         </div>
 
         <div className="flex flex-col items-center justify-center flex-1 sm:flex-none sm:w-[40%] max-w-150 gap-2">
-          <div className="flex items-center gap-2 sm:gap-6">
+          <div className="flex items-center gap-1.5 @max-xs:gap-2 sm:gap-6 flex-wrap justify-center">
             <FiShuffle
               onClick={shuffleQueue}
               className={`cursor-pointer text-lg transition 
@@ -165,7 +165,7 @@ export const Player = ({ song }) => {
           </div>
 
           <div className="flex items-center gap-2 w-full ">
-            <span className="text-xs text-text-secondary w-8 sm:w-10 text-right font-medium">
+            <span className="text-[10px] sm:text-xs text-text-secondary w-6 sm:w-10 shrink-0 text-right font-medium">
               {formatTime(progress)}
             </span>
             <input
@@ -182,13 +182,13 @@ export const Player = ({ song }) => {
           </div>
         </div>
 
-        <div className="flex justify-center items-center gap-2 sm:gap-5 pr-2 sm:pr-5 shrink-0">
+        <div className="flex justify-center items-center gap-1.5 sm:gap-5 pr-1 sm:pr-5 shrink-0">
           <FavoriteButton item={currentSong} type="song" />
           <div className="relative">
             <AddToPlaylistButton song={currentSong} />
 
             {menuOpen && (
-              <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-surface border border-brand-light/40 rounded-lg shadow-xl w-44 py-1 z-10">
+              <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-surface border border-brand-light/40 rounded-lg shadow-xl w-36 sm:w-44 py-1 max-w-[90vw] z-10">
                 {playlists.map((pl) => (
                   <button
                     key={pl.id}

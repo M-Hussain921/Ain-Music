@@ -35,7 +35,7 @@ export const Home = () => {
           <div className="max-w-3xl">
 
             <h1
-              className={`text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight sm:leading-[1.05] tracking-tight transition-all duration-1000 delay-200 ${
+              className={`text-xl xs:text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight sm:leading-[1.05] tracking-tight transition-all duration-1000 delay-200 ${
                 loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
               }`}
             >
@@ -57,7 +57,7 @@ export const Home = () => {
             </p>
 
             <div
-              className={`mt-6 sm:mt-10 flex items-stretch sm:items-center gap-3 sm:gap-4 transition-all duration-1000 delay-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`flex flex-col xs:flex-row items-stretch xs:items-center gap-2 xs:gap-3 sm:gap-4 transition-all duration-1000 delay-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
             >
               <button className="group relative max-w-max sm:w-auto text-center px-5 py-2.5 sm:px-8 sm:py-3.5 bg-brand-primary text-white font-semibold rounded-xl overflow-hidden transition-all hover:scale-105 hover:shadow-lg hover:shadow-brand-primary/25 active:scale-95">
                 <span className="relative z-10 text-sm sm:text-base">Discover Now</span>
@@ -73,7 +73,7 @@ export const Home = () => {
         </div>
       </section>
 
-      <div className="py-2 sm:py-12 space-y-8 sm:space-y-14 md:space-y-16">
+      <div className="px-3 sm:px-4 lg:px-8 md:px-6 xl:px-12">
         <SongSection
           titleStart="Weekly Top"
           titleHighlight="Songs"

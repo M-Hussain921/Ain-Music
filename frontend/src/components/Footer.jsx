@@ -2,12 +2,12 @@ import brandLogo from "../assets/brand-logo2.png";
 export const Footer = () => {
   return (
     <footer className="flex flex-col md:flex-row items-center justify-between pt-6 pb-3 px-4 gap-2 md:gap-1">
-      <div className="text-text-primary flex flex-row  items-center gap-1">
+      <div className="text-text-primary flex flex-row items-center gap-1 flex-wrap">
         <div>
           <img src={brandLogo} alt="Brand Logo" className="md:w-32 w-20 h-auto" />
         </div>
         <div>
-          <p className="pt-5 text-[0.625rem] sm:text-sm">&copy; 2026 Ain Music. All rights reserved.</p>
+          <p className="pt-2 sm:pt-5 text-[0.625rem] sm:text-sm">&copy; 2026 Ain Music. All rights reserved.</p>
         </div>
       </div>
 

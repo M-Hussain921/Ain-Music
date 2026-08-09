@@ -102,7 +102,7 @@ export const Navbar = ({ onMenuClick }) => {
 
   return (
     <header
-      className={`px-4 sm:px-8 py-1.5 flex items-center justify-between sticky pointer-events-auto top-0 left-0 z-[999] transition-all border-b border-brand-light/40 ${
+      className={`px-2.5 sm:px-6 sm:py-2 text-xs sm:text-sm whitespace-nowrap py-1.5 flex items-center justify-between sticky pointer-events-auto top-0 left-0 z-[999] transition-all border-b border-brand-light/40 ${
         scrolled
           ? "bg-surface backdrop-blur-3xl"
           : "bg-transparent backdrop-blur-3xl"
@@ -120,7 +120,7 @@ export const Navbar = ({ onMenuClick }) => {
         <form
           onSubmit={handleSubmit}
           ref={containerRef}
-          className="relative flex-1 max-w-xs sm:max-w-80 group"
+          className="relative flex-1 max-w-[140px] xs:max-w-xs sm:max-w-80 min-w-0 group"
         >
           <input
             type="text"
@@ -128,7 +128,7 @@ export const Navbar = ({ onMenuClick }) => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onFocus={() => input.trim() && setDropdownOpen(true)}
-            className="w-full bg-surface text-sm text-text-primary pl-11 pr-4 py-2.5 rounded-2xl outline-none border border-brand-light/40 focus:border-brand-primary transition-all placeholder-text-secondary"
+            className="w-full bg-surface text-sm text-text-primary pl-9 sm:pl-11 pr-3 sm:pr-4 py-2 sm:py-2.5 rounded-2xl outline-none border border-brand-light/40 focus:border-brand-primary transition-all placeholder-text-secondary"
           />
           <button
             type="submit"
@@ -230,7 +230,7 @@ export const Navbar = ({ onMenuClick }) => {
           <div className="flex items-center space-x-4">
             <button
               onClick={() => setAuthformOpen(true)}
-              className="border border-brand-primary text-text-secondary text-sm flex justify-center font-semibold  px-3 sm:px-6 py-2 text-xs sm:text-sm rounded-2xl hover:bg-brand-light hover:text-white hover:border-none transition-all"
+              className="border border-brand-primary text-text-secondary text-sm flex justify-center font-semibold  px-2.5 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm whitespace-nowrap rounded-2xl hover:bg-brand-light hover:text-white hover:border-none transition-all"
             >
               <FiUser className="mr-2 text-base" /> Join
             </button>
