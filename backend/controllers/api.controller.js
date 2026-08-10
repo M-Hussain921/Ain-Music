@@ -1,5 +1,5 @@
 import * as apiService from "../services/api.service.js";
-import { withFallback } from "../utils/fallbackFetcher.js";
+import { withFallback } from "../utils/fallBackFetcher.js";
 
 const FALLBACK_API = "https://jiosaavn-api.vercel.app/api";
 
