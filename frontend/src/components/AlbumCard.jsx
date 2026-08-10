@@ -1,9 +1,11 @@
 import { AlbumPlayButton } from "./AlbumPlayButton";
 import { FavoriteButton } from "./FavoriteButton";
 import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export const AlbumCard = ({ albums }) => {
-
+  const navigate=useNavigate();
+  
   return (
     <div
       onClick={() => navigate(`/album/${albums.id}`)}
