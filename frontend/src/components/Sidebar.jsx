@@ -60,8 +60,8 @@ export const Sidebar = ({ isOpen, onClose, setSidebarOpen }) => {
                       className={({ isActive }) =>
                         `flex items-center px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm md:text-base truncate cursor-pointer transition-all duration-300 rounded-xl font-medium ${
                           isActive
-                            ? "text-white bg-brand-primary"
-                            : "text-text-secondary hover:text-text-primary hover:bg-brand-light/30"
+                            ? "text-white "
+                            : "text-text-secondary hover:text-text-primary "
                         }`
                       }
                     >
