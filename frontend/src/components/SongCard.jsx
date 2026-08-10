@@ -10,9 +10,12 @@ export const SongCard = ({ song }) => {
           alt={song.title}
           className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
         />
-        <div className="absolute inset-0 bg-black/40 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity pointer-events-none" />
 
-        <div className="absolute bottom-2 right-2 sm:right-3 flex gap-2 sm:gap-3 md:gap-4 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 z-10">
+        <div
+          className="absolute bottom-2 right-2 sm:right-3 flex gap-2 sm:gap-3 md:gap-4 opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-200 z-10 "
+          onClick={(e) => e.stopPropagation()}
+        >
           <FavoriteButton item={song} type="song" />
           <PlayButton song={song} />
         </div>
