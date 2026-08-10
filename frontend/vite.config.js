@@ -7,9 +7,9 @@ export default defineConfig({
   server: {
     proxy: {
       "/saavn": {
-        target: "http://localhost:4000",   
+        target: "https://ain-music.onrender.com",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/saavn/, ""),
+        rewrite: (path) => path.replace(/^\/saavn/, "/api"),
       },
     },
   },

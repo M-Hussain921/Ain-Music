@@ -12,13 +12,13 @@ import { runInBatches } from "../utils/runInBatches";
 
 export const MusicContext = createContext();
 
-const SAAVN_API = "/saavn/api";
-const BACKEND_API = "http://localhost:4000/api/user";
+const BASE_URL = "https://ain-music.onrender.com/api";
+const BACKEND_API = `${BASE_URL}/user`;
 
 async function fetchSongsByQuery(query, limit = 10) {
   try {
     const res = await fetch(
-      `${SAAVN_API}/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`,
+      `${BASE_URL}/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`,
     );
 
     if (!res.ok) throw new Error("Server down");
@@ -50,7 +50,7 @@ async function fetchSongById(id) {
 async function fetchArtistByQuery(query, limit = 10) {
   try {
     const res = await fetch(
-      `${SAAVN_API}/search/artists?query=${encodeURIComponent(query)}&limit=${limit}`,
+      `${BASE_URL}/search/artists?query=${encodeURIComponent(query)}&limit=${limit}`,
     );
 
     if (!res.ok) throw new Error("Server down");
@@ -76,7 +76,7 @@ async function fetchArtistByQuery(query, limit = 10) {
 async function fetchAlbumsByQuery(query, limit = 10) {
   try {
     const res = await fetch(
-      `${SAAVN_API}/search/albums?query=${encodeURIComponent(query)}&limit=${limit}`,
+      `${BASE_URL}/search/albums?query=${encodeURIComponent(query)}&limit=${limit}`,
     );
 
     if (!res.ok) throw new Error("Server down");
@@ -99,7 +99,7 @@ async function fetchAlbumsByQuery(query, limit = 10) {
 
 async function fetchAlbumDetails(id) {
   try {
-    const res = await fetch(`${SAAVN_API}/albums?id=${id}`);
+    const res = await fetch(`${BASE_URL}/albums?id=${id}`);
     if (!res.ok) throw new Error("Server down");
 
     const data = await res.json();
@@ -125,7 +125,7 @@ async function fetchAlbumDetails(id) {
 
 async function fetchArtistDetails(id) {
   try {
-    const res = await fetch(`${SAAVN_API}/artists?id=${id}`);
+    const res = await fetch(`${BASE_URL}/artists?id=${id}`);
     if (!res.ok) throw new Error("Server down");
 
     const data = await res.json();
