@@ -5,7 +5,7 @@ export const ProtectedRoutes=({children})=>{
 const token = localStorage.getItem("token");
 
   if (!token) {
-    return <Navigate to="/" />;
+    return <Navigate to="/join" replace />;
   }
 
   const decoded=jwtDecode(token);

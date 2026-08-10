@@ -1,9 +1,13 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 
 export const AuthForm = ({ onClose }) => {
   const { sendOTP, verifyOTP, loading, error } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+ const handleOnclose = onClose || (() => navigate("/", { replace: true }));
 
   const [step, setStep] = useState("phone");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -15,7 +19,7 @@ export const AuthForm = ({ onClose }) => {
     const success = await sendOTP(phoneNumber);
     if (success) {
       setStep("otp");
-    }N
+    }
   };
 
   const handleVerifyOtp = async (e) => {
@@ -23,14 +27,14 @@ export const AuthForm = ({ onClose }) => {
     if (!phoneNumber.trim() || !otp.trim()) return;
     const success = await verifyOTP(phoneNumber, otp);
     if (success) {
-      onClose();
+      handleOnclose();
     }
   };
 
   return createPortal(
-     <div className="fixed inset-0  bg-black/60 flex items-center justify-center z-2000">
-      <div className="bg-surface p-6 rounded-xl w-96 border border-brand-light/40">
-        <h2 className="text-xl font-bold text-text-primary mb-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center px-4 z-[2000] ">
+      <div className="bg-surface p-4 sm:p-6 rounded-xl backdrop-blur-xl border-white/20 shadow-2xl shadow-black/20 w-[90%] max-w-96 bg-surface  ">
+        <h2 className="text-lg sm:text-xl font-bold text-text-primary mb-3 sm:mb-4">
           {step === "phone" ? "Login" : "Enter OTP"}
         </h2>
         {step === "phone" ? (
@@ -40,7 +44,7 @@ export const AuthForm = ({ onClose }) => {
               placeholder="+91XXXXXXXXXX"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
-              className="bg-bg text-text-primary px-4 py-2.5 rounded-lg border border-brand-light/40 outline-none focus:border-brand-primary"
+              className="bg-white/10 backdrop-blur-sm text-text-primary px-4 py-2.5 rounded-lg border border-white/20 outline-none focus:border-brand-primary"
             />
             <button
               type="submit"
@@ -50,7 +54,7 @@ export const AuthForm = ({ onClose }) => {
               {loading ? "Sending..." : "Send OTP"}
             </button>
           </form>
-           ) : (
+        ) : (
           <form onSubmit={handleVerifyOtp} className="flex flex-col gap-3">
             <input
               type="text"
@@ -68,17 +72,17 @@ export const AuthForm = ({ onClose }) => {
               {loading ? "Verifying..." : "Verify OTP"}
             </button>
           </form>
-           )}
-            {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
+        )}
+        {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
 
         <button
-          onClick={onClose}
+          onClick={handleOnclose}
           className="text-text-secondary text-sm mt-4 hover:text-text-primary"
         >
           Cancel
         </button>
       </div>
     </div>,
-     document.body
+    document.body,
   );
 };
