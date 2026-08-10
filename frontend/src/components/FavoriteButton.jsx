@@ -2,12 +2,13 @@ import { useContext } from "react";
 import { MusicContext } from "../context/MusicContext";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { AuthContext } from "../context/AuthContext";
+import { AuthModalContext } from "../context/AuthModalContext";
 
 export const FavoriteButton = ({ item, type }) => {
   const { favorites, favArtists, favAlbums, playlists, toggleFavorite } =
     useContext(MusicContext);
-
   const { token } = useContext(AuthContext);
+  const { requireAuth } = useContext(AuthModalContext);
 
   const getList = () => {
     switch (type) {
@@ -32,7 +33,7 @@ export const FavoriteButton = ({ item, type }) => {
 
   const handleClick = (e) => {
     e.stopPropagation();
-    toggleFavorite(item, type, token);
+    requireAuth(() => toggleFavorite(item, type, token));
   };
 
   return (
@@ -45,7 +46,7 @@ export const FavoriteButton = ({ item, type }) => {
           className={`text-xs xs:text-sm sm:text-lg transition ${isFavorite ? " fill-brand-primary scale-110" : "text-text-secondary hover:text-text-primary"}`}
         />
       ) : (
-       <FaRegHeart className="text-xs xs:text-sm sm:text-lg" />
+        <FaRegHeart className="text-xs xs:text-sm sm:text-lg" />
       )}
     </button>
   );

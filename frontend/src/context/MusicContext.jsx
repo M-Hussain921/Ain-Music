@@ -563,27 +563,27 @@ export function MusicProvider({ children }) {
     }
   };
 
-  // const addSongToPlaylist = async (playlistId, token, track) => {
-  //   try {
-  //     const data = await authFetch(`${BACKEND_API}/my-playlist`, token, {
-  //       method: "POST",
-  //       body: JSON.stringify({ playlistId, songId: track.id }),
-  //     });
-  //     setPlaylists((prevPlaylists) =>
-  //       prevPlaylists.map((pl) => {
-  //         if (pl._id !== playlistId) return pl;
-  //         return {
-  //           ...pl,
-  //           songs: data.liked
-  //             ? [...pl.songs, track.id]
-  //             : pl.songs.filter((songId) => songId !== track.id),
-  //         };
-  //       }),
-  //     );
-  //   } catch (error) {
-  //     console.error("add to song playlist error:", error);
-  //   }
-  // };
+  const addSongToPlaylist = async (playlistId, token, track) => {
+    try {
+      const data = await authFetch(`${BACKEND_API}/my-playlist`, token, {
+        method: "POST",
+        body: JSON.stringify({ playlistId, songId: track.id }),
+      });
+      setPlaylists((prevPlaylists) =>
+        prevPlaylists.map((pl) => {
+          if (pl._id !== playlistId) return pl;
+          return {
+            ...pl,
+            songs: data.liked
+              ? [...pl.songs, track.id]
+              : pl.songs.filter((songId) => songId !== track.id),
+          };
+        }),
+      );
+    } catch (error) {
+      console.error("add to song playlist error:", error);
+    }
+  };
 
   useEffect(() => {
     if (didLoadRef.current) return;
@@ -631,7 +631,7 @@ export function MusicProvider({ children }) {
         toggleFavorite,
         playlists,
         createPlaylist,
-        // addSongToPlaylist,
+        addSongToPlaylist,
         fetchSongsByQuery,
         fetchArtistByQuery,
         fetchAlbumsByQuery,
@@ -652,8 +652,6 @@ export function MusicProvider({ children }) {
         currentArtistId,
         fetchArtistDetails,
         playArtistSongs,
-        // toggleFavAlbum,
-        // toggleFavArtist,
         fetchSongById,
         toggleFavorite,
       }}
