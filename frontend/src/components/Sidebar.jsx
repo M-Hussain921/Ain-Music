@@ -3,11 +3,7 @@ import {
   FiHome,
   FiDisc,
   FiUsers,
-  FiClock,
   FiHeart,
-  FiPlus,
-  FiSettings,
-  FiActivity,
   FiList,
 } from "react-icons/fi";
 import { NavLink } from "react-router-dom";

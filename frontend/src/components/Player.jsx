@@ -7,8 +7,6 @@ import {
   FiSkipForward,
   FiShuffle,
   FiRepeat,
-  FiVolume2,
-  FiPlusCircle,
 } from "react-icons/fi";
 import { MusicContext } from "../context/MusicContext";
 import { formatTime } from "../utils/SongDuration.js";

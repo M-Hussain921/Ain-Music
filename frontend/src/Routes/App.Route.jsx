@@ -1,6 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import { Navbar } from "../components/Navbar.jsx";
-import { Sidebar } from "../components/Sidebar.jsx";
 import { AlbumDetailPage } from "../components/AlbumDetailPage.jsx";
 import { ArtistsPage } from "../pages/ArtistsPage.jsx";
 import { ArtistDetailPage } from "../pages/ArtistDetailPage.jsx";
@@ -11,7 +9,7 @@ import { AlbumPage } from "../pages/AlbumPage.jsx";
 import { PlaylistDetailPage } from "../pages/PlaylistDetailPage.jsx";
 import { ProtectedRoutes } from "../auth/ProtectedRoute.jsx";
 import { AuthForm } from "../components/AuthForm.jsx";
-import {YourPlaylistsPage} from "../pages/YourPlaylist.jsx"
+import { YourPlaylistsPage } from "../pages/YourPlaylist.jsx";
 
 export const AppRoute = () => {
   return (

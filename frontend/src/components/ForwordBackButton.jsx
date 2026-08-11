@@ -2,7 +2,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 export const ForwardBackButton = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   return (
     <button
       onClick={() => navigate(-1)}

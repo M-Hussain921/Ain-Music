@@ -1,7 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import { AppRoute } from "./Routes/App.Route.jsx";
-import { AuthModalProvider } from "./context/AuthModalContext.jsx"
-import { GlobalAuthModal } from './components/GlobalAuthModal.jsx'
+import { AuthModalProvider } from "./context/AuthModalContext.jsx";
+import { GlobalAuthModal } from "./components/GlobalAuthModal.jsx";
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
         <GlobalAuthModal />
       </AuthModalProvider>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;

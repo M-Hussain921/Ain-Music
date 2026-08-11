@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { MusicContext } from "../context/MusicContext";
 import { AlbumCard } from "./AlbumCard";
 import { ViewAllCard } from "./ViewAllCard";

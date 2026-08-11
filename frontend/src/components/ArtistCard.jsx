@@ -1,4 +1,3 @@
-import { ArtistPlayButton } from "./ArtistPlayButton";
 import { useNavigate } from "react-router-dom";
 
 export const ArtistCard = ({ artist }) => {

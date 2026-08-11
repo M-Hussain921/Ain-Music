@@ -17,13 +17,12 @@ export const Home = () => {
   return (
     <div className="relative ">
       <section className="relative  min-h-[60vh] sm:min-h-[70vh] md:min-h-screen flex items-end overflow-hidden bg-black isolate">
-        
         <div className="absolute inset-0 z-0 overflow-hidden">
           <img
             src={HeroImg}
             alt="hero"
             fetchPriority="high"
-             decoding="async"
+            decoding="async"
             className={`w-full h-full object-cover transition-transform duration-[20000ms] ease-linear ${
               loaded ? "scale-110" : "scale-100"
             }`}
@@ -35,7 +34,6 @@ export const Home = () => {
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 md:px-6 xl:px-12 pb-12 sm:pb-20 md:pb-28">
           <div className="max-w-3xl ">
-
             <h1
               className={`text-xl xs:text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight sm:leading-[1.05] tracking-tight transition-all duration-1000 delay-200 ${
                 loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"

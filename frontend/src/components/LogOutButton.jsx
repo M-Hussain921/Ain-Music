@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { CgLogOut } from "react-icons/cg";
 
 export const LogoutButton=()=> {
   const { logOut } = useContext(AuthContext);

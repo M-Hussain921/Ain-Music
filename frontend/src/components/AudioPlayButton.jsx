@@ -1,25 +1,21 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { MusicContext } from "../context/MusicContext";
-import {PlayButtonUI} from "./PlayButtonUI.jsx";
+import { PlayButtonUI } from "./PlayButtonUI.jsx";
 
-export const PlayButton=({song})=>{
-    const {
-    currentSong,
-    isPlaying,
-    playSong,
-    togglePlayPause,
-  } = useContext(MusicContext);
+export const PlayButton = ({ song }) => {
+  const { currentSong, isPlaying, playSong, togglePlayPause } =
+    useContext(MusicContext);
 
   const isThisSongPlaying = currentSong?.id === song.id && isPlaying;
 
-  const handleClick=(e)=>{
+  const handleClick = (e) => {
     e.stopPropagation();
-     if (currentSong?.id === song.id) {
+    if (currentSong?.id === song.id) {
       togglePlayPause();
     } else {
       playSong(song);
     }
-  }
+  };
 
- return <PlayButtonUI isActive={isThisSongPlaying} onClick={handleClick} />;
-}
+  return <PlayButtonUI isActive={isThisSongPlaying} onClick={handleClick} />;
+};

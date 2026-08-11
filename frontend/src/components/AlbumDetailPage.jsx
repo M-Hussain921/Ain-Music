@@ -2,7 +2,6 @@ import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { MusicContext } from "../context/MusicContext.jsx";
 import { FiArrowLeft, FiPlay, FiPause } from "react-icons/fi";
-import { PlayButton } from "./AudioPlayButton.jsx";
 import { formatTime } from "../utils/SongDuration.js";
 import { FavoriteButton } from "./FavoriteButton.jsx";
 import { SongsList } from "./SongsList.jsx";
@@ -30,7 +29,6 @@ export const AlbumDetailPage = () => {
     const loadAlbum = async () => {
       setLoading(true);
       const data = await fetchAlbumDetails(id);
-      console.log("Fetched album details:", data);
       if (isMounted) {
         setAlbum(data);
         setLoading(false);
@@ -53,7 +51,7 @@ export const AlbumDetailPage = () => {
   }
 
   const handlePlayAll = () => {
-    playAlbum(album.songs, 0); 
+    playAlbum(album.songs, 0);
   };
 
   const handleSongClick = (index) => {
@@ -95,7 +93,7 @@ export const AlbumDetailPage = () => {
 
           <button
             onClick={handlePlayAll}
-          className="mt-4 flex items-center justify-center sm:justify-start gap-2 bg-brand-primary text-white px-4 py-1.5 sm:px-5 sm:py-2 text-sm sm:text-base rounded-full hover:scale-105 transition-all mx-auto sm:mx-0"
+            className="mt-4 flex items-center justify-center sm:justify-start gap-2 bg-brand-primary text-white px-4 py-1.5 sm:px-5 sm:py-2 text-sm sm:text-base rounded-full hover:scale-105 transition-all mx-auto sm:mx-0"
           >
             <FiPlay /> Play All
           </button>

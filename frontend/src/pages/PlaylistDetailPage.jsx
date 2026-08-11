@@ -20,7 +20,7 @@ export const PlaylistDetailPage = () => {
     setLoading(true);
     Promise.all(playlist.songs.map((songId) => fetchSongById(songId))).then(
       (results) => {
-        setSongs(results.filter(Boolean)); 
+        setSongs(results.filter(Boolean));
         setLoading(false);
       },
     );
@@ -36,7 +36,9 @@ export const PlaylistDetailPage = () => {
           <FiMusic className="text-4xl text-white/80" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-text-primary">{playlist.name}</h1>
+          <h1 className="text-3xl font-bold text-text-primary">
+            {playlist.name}
+          </h1>
           <p className="text-text-secondary mt-1">{songs.length} songs</p>
           <button
             onClick={() => songs.length && playAlbum(songs, 0, playlist._id)}
@@ -53,12 +55,17 @@ export const PlaylistDetailPage = () => {
         <div className="flex flex-col gap-3">
           {songs.map((song) => (
             <div key={song.id} className="flex items-center gap-4">
-              <img src={song.coverArt} className="w-12 h-12 rounded object-cover" />
+              <img
+                src={song.coverArt}
+                className="w-12 h-12 rounded object-cover"
+              />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-text-primary truncate">
                   {song.title}
                 </p>
-                <p className="text-xs text-text-secondary truncate">{song.artist}</p>
+                <p className="text-xs text-text-secondary truncate">
+                  {song.artist}
+                </p>
               </div>
               <PlayButton song={song} />
             </div>

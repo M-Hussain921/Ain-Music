@@ -4,7 +4,14 @@ import { MusicContext } from "../context/MusicContext";
 import { PlayButtonUI } from "./PlayButtonUI";
 
 export const AlbumPlayButton = ({ album }) => {
-  const { currentAlbumId, isPlaying, playAlbum, togglePlayPause, fetchAlbumDetails } = useContext(MusicContext);
+  const {
+    currentAlbumId,
+    isPlaying,
+    playAlbum,
+    togglePlayPause,
+    fetchAlbumDetails,
+  } = useContext(MusicContext);
+  
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -29,5 +36,11 @@ export const AlbumPlayButton = ({ album }) => {
     navigate(`/album/${album.id}`);
   };
 
-  return <PlayButtonUI isActive={isThisAlbumPlaying} isLoading={loading} onClick={handleClick} />;
+  return (
+    <PlayButtonUI
+      isActive={isThisAlbumPlaying}
+      isLoading={loading}
+      onClick={handleClick}
+    />
+  );
 };

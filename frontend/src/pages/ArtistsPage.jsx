@@ -12,7 +12,7 @@ export const ArtistGrid = ({ title, artists, navigate }) => {
           <div
             key={artist.id}
             onClick={() => navigate(`/artist/${artist.id}`)}
-            className="flex flex-col items-center cursor-pointer group relative" 
+            className="flex flex-col items-center cursor-pointer group relative"
           >
             <div className="rw-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-30 lg:h-30 rounded-full overflow-hidden bg-zinc-800 relative">
               <img
