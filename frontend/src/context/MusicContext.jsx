@@ -36,7 +36,7 @@ async function fetchSongsByQuery(query, limit = 10) {
 
 async function fetchSongById(id) {
   try {
-    const res = await fetch(`${SAAVN_API}/songs?id=${id}`);
+    const res = await fetch(`${BASE_URL}/songs?id=${id}`);
     if (!res.ok) throw new Error("Server down");
     const data = await res.json();
     const results = data?.data || [];

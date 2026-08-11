@@ -4,13 +4,4 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  server: {
-    proxy: {
-      "/saavn": {
-        target: "https://ain-music.onrender.com",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/saavn/, "/api"),
-      },
-    },
-  },
 });
