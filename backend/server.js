@@ -14,13 +14,25 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
-app.use("/api/user",userRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api", apiRoutes);
 
 const startServer = async () => {
-  await connectMongo();
-  await connectRedis();
-  const port = process.env.PORT||4000;
+  const port = process.env.PORT || 4000;
+
+  try {
+    await connectMongo();
+    console.log("MongoDB connected");
+  } catch (err) {
+    console.error("MongoDB connection failed:", err.message);
+  }
+
+  try {
+    await connectRedis();
+    console.log("Redis connected");
+  } catch (err) {
+    console.warn("Redis connection failed (caching disabled):", err.message);
+  }
 
   app.listen(port, () => console.log(`Server running on port ${port}`));
 };
