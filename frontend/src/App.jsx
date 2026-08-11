@@ -1,5 +1,5 @@
 import { BrowserRouter } from "react-router-dom";
-import { AppRoute } from "./Routes/App.Route.jsx";
+import { AppRoute } from "./routes/App.Route.jsx";
 import { AuthModalProvider } from "./context/AuthModalContext.jsx";
 import { GlobalAuthModal } from "./components/GlobalAuthModal.jsx";
 
