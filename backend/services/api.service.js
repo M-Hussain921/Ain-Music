@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import { formatArtist } from "../helper/formatArtist";
 
 const SAAVN_API = "https://jiosaavn-api-w8k7.onrender.com/api";
 
@@ -98,15 +99,7 @@ export const fetchArtistDetails = async (id) => {
   const artist = data?.data;
   if (!artist) return null;
 
-  const formatted = {
-    id: artist.id,
-    name: artist.name,
-    image: artist.image?.[2]?.url || "https://via.placeholder.com/150",
-    bio: artist.bio || null,
-    topSongs: artist.topSongs || [],
-    topAlbums: artist.topAlbums || [],
-    songs: artist.songs || [],
-  };
+   const formatted = formatArtist(artist);
 
   setCache(key, formatted);
   return formatted;
