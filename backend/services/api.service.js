@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { formatArtist } from "../helper/formatArtist";
+import { formatArtist } from "../helper/formatArtist.js";
 
 const SAAVN_API = "https://jiosaavn-api-w8k7.onrender.com/api";
 
