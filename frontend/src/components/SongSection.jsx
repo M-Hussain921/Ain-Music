@@ -6,8 +6,8 @@ export const SongSection = ({
   songs,
 }) => {
   return (
-    <section className="mt-8 sm:mt-12 w-full px-2 sm:px-4 md:px-6 lg:px-8">
-      <h2 className="text-xl sm:text-2xl font-bold text-text-primary mb-4 sm:mb-5">
+    <section className="mb-6 sm:mb-10">
+      <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-text-primary">
         {titleStart}{" "}
         <span className="text-brand-primary">{titleHighlight}</span>
       </h2>

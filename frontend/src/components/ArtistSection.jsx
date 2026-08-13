@@ -22,9 +22,9 @@ export const ArtistSection = () => {
   }, []);
 
   return (
-    <section className="mt-8 sm:mt-12 w-full px-2 sm:px-4 md:px-6 lg:px-8 ">
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
-        <h2 className="text-xl sm:text-2xl font-bold text-text-primary ml-0">
+    <section className="mb-6 sm:mb-10">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <h2 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2 text-text-primary">
           Popular <span className="text-brand-primary">Artists</span>
         </h2>
         <ViewAllCard to="/artists" />

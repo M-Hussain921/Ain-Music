@@ -3,7 +3,7 @@ import { FavoriteButton } from "./FavoriteButton";
 
 export const SongCard = ({ song }) => {
   return (
-    <div className="group relative ">
+    <div className="group relative">
       <div className="relative w-full aspect-square rounded-xl  bg-zinc-800 overflow-hidden">
         <img
           src={song.coverArt}

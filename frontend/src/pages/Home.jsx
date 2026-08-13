@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import HeroImg from "../assets/images/hero-image.png";
-import { MusicContext } from "../context/MusicContext";
-import { SongSection } from "../components/SongSection";
-import { ArtistSection } from "../components/ArtistSection";
-import { AlbumSection } from "../components/AlbumSection";
+import { MusicContext } from "../context/MusicContext.jsx";
+import { SongSection } from "../components/SongSection.jsx";
+import { ArtistSection } from "../components/ArtistSection.jsx";
+import { AlbumCard } from "../components/AlbumCard.jsx";
 
 export const Home = () => {
   const { homeContent } = useContext(MusicContext);
@@ -75,7 +75,7 @@ export const Home = () => {
         />
 
         <ArtistSection />
-        <AlbumSection />
+        <AlbumCard title="Top Playist" albums={homeContent.newReleaseAlbums} />
       </div>
     </div>
   );

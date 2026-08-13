@@ -188,9 +188,10 @@ export function MusicProvider({ children }) {
     weeklyTop: [],
     newReleases: [],
     popularArtist: [],
-    topAlbums: [],
+    topPlaylist: [],
     trendingAlbums: [],
     newReleaseAlbums: [],
+    bestOf90s:[],
   });
   const [searchResults, setSearchResults] = useState({
     songs: [],
@@ -291,6 +292,7 @@ export function MusicProvider({ children }) {
       setCurrentIndex(queue.length - 1);
     }
   };
+
   const shuffleQueue = () => {
     if (queue.length === 0) return;
 
@@ -327,12 +329,14 @@ export function MusicProvider({ children }) {
 
   const loadHomePageContent = async () => {
     try {
-      const [weeklyTop, newReleases, trendingAlbums, newReleaseAlbums] =
+      const [weeklyTop, newReleases, trendingAlbums, newReleaseAlbums,bestOf90s,topPlaylist] =
         await Promise.all([
           fetchSongsByQuery("trending bollywood", 10),
           fetchSongsByQuery("New bollywood", 10),
           fetchAlbumsByQuery("trending bollywood", 10),
           fetchAlbumsByQuery("new bollywood", 10),
+          fetchAlbumsByQuery("best of 90s hindi",10),
+          fetchAlbumsByQuery("Chill Playlist",10)
         ]);
 
       const internationalArtists = [
@@ -408,6 +412,7 @@ export function MusicProvider({ children }) {
         "Jassie Gill",
         "Gippy Grewal",
         "Nakash Aziz",
+        "Mohammed Rafi",
         "Jasleen Royal",
         "Karan Aujla",
         "Shankar Mahadevan",
@@ -448,6 +453,8 @@ export function MusicProvider({ children }) {
         trendingAlbums,
         newReleaseAlbums,
         allArtists: uniqueAllArtists,
+        bestOf90s,
+        topPlaylist
       });
     } catch (error) {
       console.error("Home content fetching error", error);
