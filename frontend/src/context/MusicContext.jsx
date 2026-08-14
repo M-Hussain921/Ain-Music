@@ -36,9 +36,7 @@ async function fetchSongsByQuery(query, limit = 10) {
 
 async function fetchSongById(id) {
   try {
-    const res = await fetch(
-      `${BASE_URL}/songs?id=${encodeURIComponent(id)}`
-    );
+    const res = await fetch(`${BASE_URL}/songs?id=${encodeURIComponent(id)}`);
 
     const data = await res.json();
 
@@ -197,7 +195,7 @@ async function fetchArtistDetails(id) {
       bio: bioText,
       topSongs,
       topAlbums,
-      allSongs
+      allSongs,
     };
   } catch (err) {
     console.warn("Artist details fetch error:", err);
@@ -216,7 +214,7 @@ export function MusicProvider({ children }) {
     topPlaylist: [],
     trendingAlbums: [],
     newReleaseAlbums: [],
-    bestOf90s:[],
+    bestOf90s: [],
   });
   const [searchResults, setSearchResults] = useState({
     songs: [],
@@ -282,26 +280,22 @@ export function MusicProvider({ children }) {
     setIsPlaying(true);
   };
 
-  const playArtistSongs = (
-  songs,
-  startIndex = 0,
-  artistId = null
-) => {
-  if (!songs || songs.length === 0) return;
+  const playArtistSongs = (songs, startIndex = 0, artistId = null) => {
+    if (!songs || songs.length === 0) return;
 
-  const selectedSong = songs[startIndex];
+    const selectedSong = songs[startIndex];
 
-  if (!selectedSong) return;
+    if (!selectedSong) return;
 
-  setQueue(songs);
-  setOriginalQueue(songs);
-  setCurrentIndex(startIndex);
+    setQueue(songs);
+    setOriginalQueue(songs);
+    setCurrentIndex(startIndex);
 
-  setCurrentAlbumId(null);
-  setCurrentArtistId(artistId);
+    setCurrentAlbumId(null);
+    setCurrentArtistId(artistId);
 
-  setIsPlaying(true);
-};
+    setIsPlaying(true);
+  };
 
   const playNext = () => {
     if (repeatMode === "one") {
@@ -365,15 +359,21 @@ export function MusicProvider({ children }) {
 
   const loadHomePageContent = async () => {
     try {
-      const [weeklyTop, newReleases, trendingAlbums, newReleaseAlbums,bestOf90s,topPlaylist] =
-        await Promise.all([
-          fetchSongsByQuery("trending bollywood", 10),
-          fetchSongsByQuery("New bollywood", 10),
-          fetchAlbumsByQuery("trending bollywood", 10),
-          fetchAlbumsByQuery("new bollywood", 10),
-          fetchAlbumsByQuery("best of 90s hindi",10),
-          fetchAlbumsByQuery("Chill Playlist",10)
-        ]);
+      const [
+        weeklyTop,
+        newReleases,
+        trendingAlbums,
+        newReleaseAlbums,
+        bestOf90s,
+        topPlaylist,
+      ] = await Promise.all([
+        fetchSongsByQuery("trending bollywood", 10),
+        fetchSongsByQuery("New bollywood", 10),
+        fetchAlbumsByQuery("trending bollywood", 10),
+        fetchAlbumsByQuery("new bollywood", 10),
+        fetchAlbumsByQuery("best of 90s hindi", 10),
+        fetchAlbumsByQuery("Chill Playlist", 10),
+      ]);
 
       const internationalArtists = [
         "Taylor Swift",
@@ -490,7 +490,7 @@ export function MusicProvider({ children }) {
         newReleaseAlbums,
         allArtists: uniqueAllArtists,
         bestOf90s,
-        topPlaylist
+        topPlaylist,
       });
     } catch (error) {
       console.error("Home content fetching error", error);

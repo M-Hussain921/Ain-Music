@@ -2,55 +2,104 @@ import { useState, createContext } from "react";
 
 export const AuthContext = createContext();
 
-const API_BASE = "http://localhost:4000/api/auth"||"http://localhost:5000/api/auth";
+const API_BASE ="https://ain-music.onrender.com/api/auth"
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(()=>localStorage.getItem("token"));
+  const [token, setToken] = useState(
+    () => localStorage.getItem("token")
+  );
+
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem("user");
-    return saved ? JSON.parse(saved) : null;
+
+    try {
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
   });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const sendOTP = async (phoneNumber) => {
+  const sendOTP = async (email) => {
     setLoading(true);
     setError(null);
+
     try {
+      const normalizedEmail = email.trim().toLowerCase();
+
       const res = await fetch(`${API_BASE}/send-otp`, {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phoneNumber }),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: normalizedEmail,
+        }),
       });
+
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
+
+      if (!res.ok) {
+        throw new Error(
+          data.message || "Failed to send OTP"
+        );
+      }
+
       return true;
     } catch (error) {
+      console.error("Send OTP error:", error);
+
       setError(error.message);
+
       return false;
     } finally {
       setLoading(false);
     }
   };
 
-  const verifyOTP = async (phoneNumber, OTP) => {
+  const verifyOTP = async (email, OTP) => {
     setLoading(true);
     setError(null);
+
     try {
+      const normalizedEmail = email.trim().toLowerCase();
+
       const res = await fetch(`${API_BASE}/verify-otp`, {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phoneNumber, OTP }),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: normalizedEmail,
+          OTP: OTP.trim(),
+        }),
       });
+
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
-      localStorage.setItem("token",data.token);
+
+      if (!res.ok) {
+        throw new Error(
+          data.message || "OTP verification failed"
+        );
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
+
       setToken(data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
       setUser(data.user);
+
       return true;
     } catch (error) {
+      console.error("Verify OTP error:", error);
+
       setError(error.message);
+
       return false;
     } finally {
       setLoading(false);
@@ -59,9 +108,11 @@ export const AuthProvider = ({ children }) => {
 
   const logOut = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user")
+    localStorage.removeItem("user");
+
     setToken(null);
     setUser(null);
+    setError(null);
   };
 
   return (
