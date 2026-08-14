@@ -39,8 +39,7 @@ export const ArtistDetailPage = () => {
 
   const hasBio = Boolean(artist.bio);
   const tabs = [
-    { key: "songs", label: "Songs" },
-    { key: "popularSongs", label: "Popular Songs" },
+    { key: "songs", label: "Popular Songs" },
     { key: "albums", label: "Albums" },
   ];
 
@@ -90,7 +89,7 @@ export const ArtistDetailPage = () => {
         ))}
       </div>
 
-      {activeTab === "popularSongs" && (
+      {activeTab === "songs" && (
         <SongsList
           songs={artist.topSongs}
           currentSong={currentSong}
@@ -105,22 +104,6 @@ export const ArtistDetailPage = () => {
         />
       )}
 
-      {activeTab === "songs" && (
-        <SongsList
-          songs={artist.allSongs}
-          currentSong={currentSong}
-          isPlaying={isPlaying}
-          pageSize={20}
-          showLoadMore={true}
-          onSongClick={(song, index) => {
-            if (currentSong?.id === song.id && isPlaying) {
-              togglePlayPause();
-            } else {
-              playArtistSongs(artist.allSongs, index, artist.id);
-            }
-          }}
-        />
-      )}
 
       {activeTab === "albums" && <AlbumCard albums={artist.topAlbums} />}
 

@@ -36,13 +36,36 @@ async function fetchSongsByQuery(query, limit = 10) {
 
 async function fetchSongById(id) {
   try {
-    const res = await fetch(`${BASE_URL}/songs?id=${id}`);
-    if (!res.ok) throw new Error("Server down");
+    const res = await fetch(
+      `${BASE_URL}/songs?id=${encodeURIComponent(id)}`
+    );
+
     const data = await res.json();
-    const results = data?.data || [];
-    return results[0] ? mapRawSongToSongs(results[0]) : null;
+
+    console.log("========== SONG DEBUG ==========");
+    console.log("Requested ID:", id);
+    console.log("Status:", res.status);
+    console.log("Response:", data);
+    console.log("================================");
+
+    if (!res.ok) {
+      throw new Error(`Server returned ${res.status}`);
+    }
+
+    const results = Array.isArray(data?.data)
+      ? data.data
+      : data?.data?.results || [];
+
+    console.log("Extracted results:", results);
+
+    if (!results.length) {
+      console.warn("NO SONG FOUND:", id);
+      return null;
+    }
+
+    return mapRawSongToSongs(results[0]);
   } catch (err) {
-    console.warn("Song fetch error:", err);
+    console.error("Song fetch error:", err);
     return null;
   }
 }
@@ -259,29 +282,26 @@ export function MusicProvider({ children }) {
     setIsPlaying(true);
   };
 
-  const playArtistSongs = async(songs, startIndex = 0, artistId = null) => {
-    if (!songs || songs.length === 0) return;
+  const playArtistSongs = (
+  songs,
+  startIndex = 0,
+  artistId = null
+) => {
+  if (!songs || songs.length === 0) return;
 
-    const selectedSong=songs[startIndex];
-    if(!selectedSong) return;
+  const selectedSong = songs[startIndex];
 
-     const fullSong = await fetchSongById(selectedSong.id);
-      if (!fullSong) {
-    console.warn("Unable to fetch song details:", selectedSong.id);
-    return;
-  }
+  if (!selectedSong) return;
 
-  const updatedSongs = [...songs];
-  updatedSongs[startIndex] = fullSong;
-
-
-    setQueue(updatedSongs);
-  setOriginalQueue(updatedSongs);
+  setQueue(songs);
+  setOriginalQueue(songs);
   setCurrentIndex(startIndex);
-    setCurrentAlbumId(null);
+
+  setCurrentAlbumId(null);
   setCurrentArtistId(artistId);
-    setIsPlaying(true);
-  };
+
+  setIsPlaying(true);
+};
 
   const playNext = () => {
     if (repeatMode === "one") {
