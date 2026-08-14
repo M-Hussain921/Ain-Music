@@ -19,6 +19,7 @@
     "mongodb": "^7.5.0",
     "mongoose": "^9.7.3",
     "node-fetch": "^3.3.2",
+    "nodemailer": "^9.0.5",
     "redis": "^6.1.0",
     "twilio": "^6.0.2"
   },
