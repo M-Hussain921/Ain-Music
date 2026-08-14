@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { MusicContext } from "../context/MusicContext";
 import { AlbumPlayButton } from "../components/AlbumPlayButton";
 import { FavoriteButton } from "../components/FavoriteButton";
-import { AlbumSection } from "../components/AlbumSection";
 import { AlbumCard } from "../components/AlbumCard";
 
 

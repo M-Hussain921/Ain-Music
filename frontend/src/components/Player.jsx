@@ -28,6 +28,7 @@ export const Player = ({ song }) => {
     shuffleQueue,
     isShuffled,
     currentIndex,
+    token
   } = useContext(MusicContext);
 
   const audioRef = useRef(null);
@@ -37,17 +38,6 @@ export const Player = ({ song }) => {
   const [duration, setDuration] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !currentSong) return;
-
-    audio.src = currentSong.audioUrl;
-
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {});
-    }
-  }, [currentSong]);
 
   useEffect(() => {
     restartedRef.current = false;
@@ -55,26 +45,81 @@ export const Player = ({ song }) => {
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) return;
-    isPlaying ? audio.play() : audio.pause();
+
+    if (!audio || !currentSong?.audioUrl) return;
+
+    if (isPlaying) {
+      const playAudio = async () => {
+        try {
+          await audio.play();
+        } catch (error) {
+          if (error.name !== "AbortError") {
+            console.error("Audio play failed:", error);
+          }
+        }
+      };
+
+      playAudio();
+    } else {
+      audio.pause();
+    }
   }, [isPlaying]);
 
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+useEffect(() => {
+  const audio = audioRef.current;
 
-    const updateProgress = () => setProgress(audio.currentTime);
-    const updateDuration = () => setDuration(audio.duration);
+  if (!audio || !currentSong?.audioUrl) return;
 
-    audio.addEventListener("timeupdate", updateProgress);
-    audio.addEventListener("loadedmetadata", updateDuration);
-    audio.addEventListener("ended", playNext);
+  audio.pause();
 
-    return () => {
-      audio.removeEventListener("timeupdate", updateProgress);
-      audio.removeEventListener("loadedmetadata", updateDuration);
-    };
-  }, [currentSong]);
+  audio.src = currentSong.audioUrl;
+
+  setProgress(0);
+  setDuration(0);
+
+  const handleLoadedMetadata = () => {
+    setDuration(audio.duration);
+  };
+
+  const handleTimeUpdate = () => {
+    setProgress(audio.currentTime);
+  };
+
+  const handleEnded = () => {
+    playNext();
+  };
+
+  audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+  audio.addEventListener("timeupdate", handleTimeUpdate);
+  audio.addEventListener("ended", handleEnded);
+
+  if (isPlaying) {
+    audio.play().catch((error) => {
+      if (error.name !== "AbortError") {
+        console.error("Audio play failed:", error);
+      }
+    });
+  }
+
+  return () => {
+    audio.pause();
+
+    audio.removeEventListener(
+      "loadedmetadata",
+      handleLoadedMetadata
+    );
+
+    audio.removeEventListener(
+      "timeupdate",
+      handleTimeUpdate
+    );
+
+    audio.removeEventListener(
+      "ended",
+      handleEnded
+    );
+  };
+}, [currentSong]);
 
   const handlePreviousClick = () => {
     const audio = audioRef.current;
@@ -100,7 +145,7 @@ export const Player = ({ song }) => {
   };
 
   const handlePlaylistSelect = (playlistId) => {
-    addSongToPlaylist(playlistId, currentSong);
+    addSongToPlaylist(playlistId,token, currentSong);
     setMenuOpen(false);
   };
 
@@ -109,7 +154,7 @@ export const Player = ({ song }) => {
 
   return (
     <>
-      <audio ref={audioRef} />
+      <audio ref={audioRef} src={currentSong?.audioUrl || " "} />
 
       <div className="w-full m-auto h-auto min-h-20 sm:h-[5.625rem] py-1.5 sm:py-0  bg-surface border-t rounded-t-3xl border-brand-light/40 px-2 sm:px-5 flex items-center justify-between gap-2 sm:gap-3 z-[950]">
         <div className="flex items-center gap-2 sm:gap-4 max-w-20 xs:max-w-28 sm:max-w-45 min-w-0 sm:min-w-45 flex-shrink-0">

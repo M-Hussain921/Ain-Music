@@ -105,6 +105,9 @@ export const AlbumDetailPage = () => {
         currentSong={currentSong}
         isPlaying={isPlaying}
         onSongClick={(song, index) => handleSongClick(index)}
+  pageSize={20}
+  showLoadMore={true}
+
       />
     </div>
   );

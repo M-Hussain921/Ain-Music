@@ -39,7 +39,8 @@ export const ArtistDetailPage = () => {
 
   const hasBio = Boolean(artist.bio);
   const tabs = [
-    { key: "songs", label: "Popular Songs" },
+    { key: "songs", label: "Songs" },
+    { key: "popularSongs", label: "Popular Songs" },
     { key: "albums", label: "Albums" },
   ];
 
@@ -89,7 +90,7 @@ export const ArtistDetailPage = () => {
         ))}
       </div>
 
-      {activeTab === "songs" && (
+      {activeTab === "popularSongs" && (
         <SongsList
           songs={artist.topSongs}
           currentSong={currentSong}
@@ -104,13 +105,24 @@ export const ArtistDetailPage = () => {
         />
       )}
 
-      {activeTab === "albums" && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-          {artist.topAlbums.map((album) => (
-            <AlbumCard key={album.id} albums={album} />
-          ))}
-        </div>
+      {activeTab === "songs" && (
+        <SongsList
+          songs={artist.allSongs}
+          currentSong={currentSong}
+          isPlaying={isPlaying}
+          pageSize={20}
+          showLoadMore={true}
+          onSongClick={(song, index) => {
+            if (currentSong?.id === song.id && isPlaying) {
+              togglePlayPause();
+            } else {
+              playArtistSongs(artist.allSongs, index, artist.id);
+            }
+          }}
+        />
       )}
+
+      {activeTab === "albums" && <AlbumCard albums={artist.topAlbums} />}
 
       <div>
         <h2 className="m-auto text-center text-text-secondary text-base sm:text-xl font-semibold mt-10 px-2">

@@ -100,6 +100,7 @@ export const fetchArtistDetails = async (id) => {
   if (!artist) return null;
 
    const formatted = formatArtist(artist);
+   console.log(formatted)
 
   setCache(key, formatted);
   return formatted;

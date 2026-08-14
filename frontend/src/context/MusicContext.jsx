@@ -151,6 +151,7 @@ async function fetchArtistDetails(id) {
       : [];
 
     const allSongs = (artist.songs || []).map(mapRawSongToSongs);
+    console.log(artist.songs[0]);
 
     const topAlbums = Array.isArray(artist.topAlbums)
       ? artist.topAlbums.map((album) => ({
@@ -173,6 +174,7 @@ async function fetchArtistDetails(id) {
       bio: bioText,
       topSongs,
       topAlbums,
+      allSongs
     };
   } catch (err) {
     console.warn("Artist details fetch error:", err);
@@ -257,13 +259,27 @@ export function MusicProvider({ children }) {
     setIsPlaying(true);
   };
 
-  const playArtistSongs = (songs, startIndex = 0, artistId = null) => {
+  const playArtistSongs = async(songs, startIndex = 0, artistId = null) => {
     if (!songs || songs.length === 0) return;
-    setQueue(songs);
-    setOriginalQueue(songs);
-    setCurrentIndex(startIndex);
+
+    const selectedSong=songs[startIndex];
+    if(!selectedSong) return;
+
+     const fullSong = await fetchSongById(selectedSong.id);
+      if (!fullSong) {
+    console.warn("Unable to fetch song details:", selectedSong.id);
+    return;
+  }
+
+  const updatedSongs = [...songs];
+  updatedSongs[startIndex] = fullSong;
+
+
+    setQueue(updatedSongs);
+  setOriginalQueue(updatedSongs);
+  setCurrentIndex(startIndex);
     setCurrentAlbumId(null);
-    setCurrentArtistId(artistId);
+  setCurrentArtistId(artistId);
     setIsPlaying(true);
   };
 
