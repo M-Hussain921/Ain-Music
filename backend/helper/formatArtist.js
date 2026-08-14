@@ -1,3 +1,12 @@
+const getArtistImage = (images, fallback = "https://via.placeholder.com/500") => {
+  return (
+    images?.find((img) => img.quality === "500x500")?.url ||
+    images?.find((img) => img.quality === "150x150")?.url ||
+    images?.[0]?.url ||
+    fallback
+  );
+};
+
 export const formatArtist = (artist) => ({
   id: artist.id,
   name: artist.name,
@@ -17,7 +26,7 @@ export const formatArtist = (artist) => ({
 
   topSongs: artist.topSongs || [],
   topAlbums: artist.topAlbums || [],
-  songs: artist.songs || [],
+  songs: artist.singles || [],
 
   similarArtists: (artist.similarArtists || []).map((item) => ({
     id: item.id,
