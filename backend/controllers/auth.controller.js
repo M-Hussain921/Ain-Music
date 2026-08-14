@@ -3,80 +3,123 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { getOtp } from "../utils/generateOtp.js";
 import redisClient from "../config/redisClient.js";
-import twilio from "twilio";
-
-const client = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN,
-);
+import { otpEmailTemplate } from "../utils/emailTemplate.js";
+import {sendMail} from "../utils/mailSender.js"
 
 const OTP_EXPIRY_SECONDS = 300;
 
 export const sendOTP = async (req, res) => {
-  const { phoneNumber } = req.body;
-  if (!phoneNumber)
+  const { email } = req.body;
+
+  if (!email) {
     return res.status(400).json({
-      message: "Phone Number is required",
+      message: "Email is required",
     });
+  }
 
   try {
+    const normalizedEmail = email.toLowerCase().trim();
+
     const otp = getOtp();
 
-    await redisClient.set(`otp:${phoneNumber}`, String(otp), {
-      EX: OTP_EXPIRY_SECONDS,
+    await redisClient.set(
+      `otp:${normalizedEmail}`,
+      String(otp),
+      {
+        EX: OTP_EXPIRY_SECONDS,
+      }
+    );
+
+    console.log("Sending OTP to:", normalizedEmail);
+
+    await sendMail({
+      from: `"Ain Music" <${process.env.EMAIL_USER}>`,
+      to: normalizedEmail,
+      subject: "Your Ain Music Verification Code",
+
+      html: otpEmailTemplate({
+        otp,
+        expiryMinutes: OTP_EXPIRY_SECONDS / 60,
+      }),
     });
 
-    await client.messages.create({
-      body: `Your Ain Music verification code is ${otp}. This code expires in ${OTP_EXPIRY_SECONDS / 60} minutes. Do not share this code with anyone.`,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: phoneNumber,
+    return res.status(200).json({
+      message: "OTP sent successfully",
     });
 
-    res.status(200).json({ message: "OTP sent successfully" });
   } catch (error) {
-    console.error("Send OTP error:", error);
-    res.status(500).json({ message: "Failed to send OTP" });
+    console.error("Email error:", error);
+
+    return res.status(500).json({
+      message: "Failed to send OTP",
+    });
   }
 };
 
 export const otpVerify = async (req, res) => {
-  const { phoneNumber, OTP } = req.body;
+  const { email, OTP } = req.body;
 
-  if (!phoneNumber)
+  if (!email) {
     return res.status(400).json({
-      message: "Phone Number is required",
+      message: "Email is required",
     });
+  }
 
-  if (!OTP)
+  if (!OTP) {
     return res.status(400).json({
       message: "OTP is required",
     });
+  }
 
   try {
-    const validOTP = await redisClient.get(`otp:${phoneNumber}`);
+    const normalizedEmail = email.toLowerCase().trim();
 
-    if (!validOTP) return res.status(400).json({ message: "OTP expried" });
+    const validOTP = await redisClient.get(`otp:${normalizedEmail}`);
 
-    if (validOTP !== OTP) {
-      return res.status(400).json({ message: "Invalid OTP" });
+    if (!validOTP) {
+      return res.status(400).json({
+        message: "OTP expired",
+      });
     }
 
-    await redisClient.del(`otp:${phoneNumber}`);
+    if (validOTP !== String(OTP)) {
+      return res.status(400).json({
+        message: "Invalid OTP",
+      });
+    }
+
+    await redisClient.del(`otp:${normalizedEmail}`);
 
     const user = await users.findOneAndUpdate(
-      { phoneNumber },
-      { phoneNumber },
-      { upsert: true, new: true },
+      { email: normalizedEmail },
+      { email: normalizedEmail },
+      {
+        upsert: true,
+        new: true,
+      },
     );
 
     const token = jwt.sign(
-      { phoneNumber: req.body.phoneNumber, userId: user._id },
+      {
+        email: normalizedEmail,
+        userId: user._id,
+      },
       process.env.JWT_TOKEN,
-      { expiresIn: "30d" },
+      {
+        expiresIn: "30d",
+      },
     );
-    return res.status(200).json({ message: "OTP verified", token, user });
+
+    return res.status(200).json({
+      message: "OTP verified",
+      token,
+      user,
+    });
   } catch (error) {
     console.error("OTP verifying error:", error);
-    res.status(500).json({ message: "OTP not verifed" });
+
+    return res.status(500).json({
+      message: "OTP verification failed",
+    });
   }
 };
