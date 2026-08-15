@@ -5,24 +5,29 @@ export const otpEmailTemplate = ({ otp, expiryMinutes = 5 }) => {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <meta name="color-scheme" content="dark" />
+  <meta name="supported-color-schemes" content="dark" />
   <title>Husnova Verification</title>
 </head>
 
 <body style="
   margin: 0;
   padding: 0;
-  background-color: #f6f6f6;
-  font-family: Arial, Helvetica, sans-serif;
-  color: #1f2f2a;
+  background-color: #16171c;
+  font-family: 'Source Sans 3', 'Segoe UI', Helvetica, Arial, sans-serif;
+  color: #d9e4e8;
 ">
+
+  <div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#16171c; opacity:0;">
+    Your Husnova verification code expires in ${expiryMinutes} minutes.
+  </div>
 
   <table
     width="100%"
     cellpadding="0"
     cellspacing="0"
     border="0"
-    style="background-color: #f6f6f6; padding: 40px 15px;"
+    style="background-color: #16171c; padding: 40px 15px;"
   >
 
     <tr>
@@ -36,10 +41,10 @@ export const otpEmailTemplate = ({ otp, expiryMinutes = 5 }) => {
           border="0"
           style="
             max-width: 480px;
-            background-color: #ffffff;
+            background-color: #1e2024;
             border-radius: 20px;
             overflow: hidden;
-            border: 1px solid #e6efe9;
+            border: 1px solid #22434f;
           "
         >
 
@@ -47,25 +52,17 @@ export const otpEmailTemplate = ({ otp, expiryMinutes = 5 }) => {
           <tr>
             <td
               style="
-                background-color: #2b5748;
-                padding: 28px 25px;
+                background-color: #22434f;
+                padding: 32px 25px;
                 text-align: center;
               "
             >
-
+             Husnova
               <div style="
-                font-size: 26px;
-                font-weight: 700;
-                color: #ffffff;
-                letter-spacing: 1px;
-              ">
-                Husnova
-              </div>
-
-              <div style="
-                margin-top: 6px;
+                margin-top: 10px;
                 font-size: 13px;
-                color: #dce9e2;
+                color: #8fa3ab;
+                letter-spacing: 0.3px;
               ">
                 Your music. Your vibe.
               </div>
@@ -81,8 +78,9 @@ export const otpEmailTemplate = ({ otp, expiryMinutes = 5 }) => {
                 margin: 0;
                 font-size: 22px;
                 line-height: 1.4;
-                color: #1f2f2a;
+                color: #d9e4e8;
                 text-align: center;
+                font-weight: 700;
               ">
                 Verify your email
               </h1>
@@ -91,7 +89,7 @@ export const otpEmailTemplate = ({ otp, expiryMinutes = 5 }) => {
                 margin: 18px 0 0;
                 font-size: 15px;
                 line-height: 1.7;
-                color: #52796f;
+                color: #8fa3ab;
                 text-align: center;
               ">
                 Use the verification code below to continue
@@ -101,16 +99,17 @@ export const otpEmailTemplate = ({ otp, expiryMinutes = 5 }) => {
               <!-- OTP -->
               <div style="
                 margin: 30px auto;
-                padding: 18px 20px;
-                background-color: #e6efe9;
+                padding: 20px 20px;
+                background-color: #16171c;
+                border: 1px solid #35697d;
                 border-radius: 14px;
                 text-align: center;
               ">
 
                 <div style="
                   font-size: 12px;
-                  color: #52796f;
-                  margin-bottom: 8px;
+                  color: #8fa3ab;
+                  margin-bottom: 10px;
                   text-transform: uppercase;
                   letter-spacing: 1.5px;
                 ">
@@ -121,7 +120,8 @@ export const otpEmailTemplate = ({ otp, expiryMinutes = 5 }) => {
                   font-size: 34px;
                   font-weight: 700;
                   letter-spacing: 8px;
-                  color: #618764;
+                  color: #65abc4;
+                  font-family: 'Courier New', Courier, monospace;
                 ">
                   ${otp}
                 </div>
@@ -132,11 +132,11 @@ export const otpEmailTemplate = ({ otp, expiryMinutes = 5 }) => {
                 margin: 0;
                 font-size: 13px;
                 line-height: 1.6;
-                color: #52796f;
+                color: #8fa3ab;
                 text-align: center;
               ">
                 This code will expire in
-                <strong style="color: #2b5748;">
+                <strong style="color: #65abc4;">
                   ${expiryMinutes} minutes
                 </strong>.
               </p>
@@ -145,11 +145,11 @@ export const otpEmailTemplate = ({ otp, expiryMinutes = 5 }) => {
                 margin: 20px 0 0;
                 font-size: 13px;
                 line-height: 1.6;
-                color: #52796f;
+                color: #8fa3ab;
                 text-align: center;
               ">
-                If you didn't request this code, you can safely
-                ignore this email.
+                For your security, never share this code with anyone.
+                If you didn't request it, you can safely ignore this email.
               </p>
 
             </td>
@@ -159,23 +159,23 @@ export const otpEmailTemplate = ({ otp, expiryMinutes = 5 }) => {
           <tr>
             <td style="
               padding: 20px 25px;
-              background-color: #f6f6f6;
-              border-top: 1px solid #e6efe9;
+              background-color: #16171c;
+              border-top: 1px solid #22434f;
               text-align: center;
             ">
 
               <p style="
                 margin: 0;
                 font-size: 12px;
-                color: #52796f;
+                color: #8fa3ab;
               ">
-                © ${new Date().getFullYear()} Husnova 
+                &copy; ${new Date().getFullYear()} Husnova
               </p>
 
               <p style="
                 margin: 6px 0 0;
                 font-size: 11px;
-                color: #9cb080;
+                color: #4c8da6;
               ">
                 This is an automated email. Please don't reply.
               </p>

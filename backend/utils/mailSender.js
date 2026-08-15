@@ -1,29 +1,72 @@
-import nodemailer from "nodemailer";
+import { google } from "googleapis";
+import MailComposer from "nodemailer/lib/mail-composer/index.js";
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
+const oauth2Client = new google.auth.OAuth2(
+  process.env.GMAIL_CLIENT_ID,
+  process.env.GMAIL_CLIENT_SECRET,
+);
+
+oauth2Client.setCredentials({
+  refresh_token: process.env.GMAIL_REFRESH_TOKEN,
 });
 
-export const sendMail = async ({ to, subject, html }) => {
-  try {
-    const info = await transporter.sendMail({
-      from: `"Husnova" <${process.env.EMAIL_USER}>`,
-      to,
-      subject,
-      html,
-    });
+const gmail = google.gmail({
+  version: "v1",
+  auth: oauth2Client,
+});
 
-    console.log("Email sent successfully:", info.messageId);
+const createRawMessage = async ({
+  from,
+  to,
+  subject,
+  html,
+}) => {
+  const mail = new MailComposer({
+    from,
+    to,
+    subject,
+    html,
+  });
 
-    return info;
-  } catch (error) {
-    console.error("Email error:", error.message);
-    throw error;
+  const message = await mail.compile().build();
+
+  return message
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+};
+
+export const sendMail = async ({
+  to,
+  subject,
+  html,
+}) => {
+  if (!to) {
+    throw new Error("Recipient email is required");
   }
+
+  if (!process.env.GMAIL_REFRESH_TOKEN) {
+    throw new Error("GMAIL_REFRESH_TOKEN is missing");
+  }
+
+  const from = `"Husova" <${process.env.EMAIL_USER}>`;
+
+  const raw = await createRawMessage({
+    from,
+    to,
+    subject,
+    html,
+  });
+
+  const response = await gmail.users.messages.send({
+    userId: "me",
+    requestBody: {
+      raw,
+    },
+  });
+
+  console.log("Email sent:", response.data.id);
+
+  return response.data;
 };

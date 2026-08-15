@@ -1,10 +1,9 @@
 import users from "../models/user.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 import { getOtp } from "../utils/generateOtp.js";
 import redisClient from "../config/redisClient.js";
 import { otpEmailTemplate } from "../utils/emailTemplate.js";
-import {sendMail} from "../utils/mailSender.js"
+import { sendMail } from "../utils/mailSender.js";
 
 const OTP_EXPIRY_SECONDS = 300;
 
@@ -16,10 +15,9 @@ export const sendOTP = async (req, res) => {
       message: "Email is required",
     });
   }
+  const normalizedEmail = email.toLowerCase().trim();
 
   try {
-    const normalizedEmail = email.toLowerCase().trim();
-
     const otp = getOtp();
 
     await redisClient.set(
@@ -27,15 +25,13 @@ export const sendOTP = async (req, res) => {
       String(otp),
       {
         EX: OTP_EXPIRY_SECONDS,
-      }
+      },
     );
 
-    console.log("Sending OTP to:", normalizedEmail);
-
     await sendMail({
-      from: `"Ain Music" <${process.env.EMAIL_USER}>`,
       to: normalizedEmail,
-      subject: "Your Ain Music Verification Code",
+
+      subject: "Your Husnova Verification Code",
 
       html: otpEmailTemplate({
         otp,
@@ -48,7 +44,9 @@ export const sendOTP = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Email error:", error);
+    console.error("Send OTP error:", error);
+
+    await redisClient.del(`otp:${normalizedEmail}`);
 
     return res.status(500).json({
       message: "Failed to send OTP",
@@ -74,7 +72,9 @@ export const otpVerify = async (req, res) => {
   try {
     const normalizedEmail = email.toLowerCase().trim();
 
-    const validOTP = await redisClient.get(`otp:${normalizedEmail}`);
+    const validOTP = await redisClient.get(
+      `otp:${normalizedEmail}`,
+    );
 
     if (!validOTP) {
       return res.status(400).json({
@@ -115,8 +115,9 @@ export const otpVerify = async (req, res) => {
       token,
       user,
     });
+
   } catch (error) {
-    console.error("OTP verifying error:", error);
+    console.error("OTP verification error:", error);
 
     return res.status(500).json({
       message: "OTP verification failed",
