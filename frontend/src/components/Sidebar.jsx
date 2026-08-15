@@ -7,7 +7,7 @@ import {
   FiList,
 } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
-import BrandLogo from "../assets/brand-logo2.png";
+import BrandLogo from "../assets/brand-logo.png";
 import { useClickOutside } from "../hooks/useClickOutside.js";
 import { useRef } from "react";
 
@@ -41,7 +41,7 @@ export const Sidebar = ({ isOpen, onClose, setSidebarOpen }) => {
           md:static md:translate-x-0 md:z-auto`}
       >
         <div className="mb-3 p-2">
-          <img src={BrandLogo} alt="Ain Music" className="w-32 sm:w-full h-auto mx-auto" />
+          <img src={BrandLogo} alt="Ain Music" className="w-55 sm:w-full h-auto mx-auto" />
         </div>
         <div className="flex flex-col space-y-3 sm:space-y-5">
           {menuSections.map((section, sIndex) => (

@@ -1,4 +1,4 @@
-import brandLogo from "../assets/brand-logo2.png";
+import brandLogo from "../assets/brand-logo.png";
 export const Footer = () => {
   return (
     <footer className="flex flex-col md:flex-row items-center justify-between pt-6 pb-3 px-4 gap-2 md:gap-1">
