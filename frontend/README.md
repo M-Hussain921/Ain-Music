@@ -1,4 +1,4 @@
-# 🎵 Music Web Player
+# 🎵 Husnova Web Player
 
 A **Spotify-inspired music streaming web application** built using **React + Vite**, featuring modular architecture, reusable components, and global state management using Context API.
 
@@ -68,7 +68,7 @@ frontend/
 
 ```bash
 # Clone the repository
-git clone https://github.com/M-Hussain921/Ain-Music.git
+git clone https://github.com/M-Hussain921/Husnova-web-player.git
 
 # Navigate to project
 cd music-app/frontend
