@@ -87,7 +87,7 @@ Song, album, and artist data is proxied from the (unofficial) JioSaavn API throu
 ## 📁 Project Structure
 
 ```
-Ain-Music/
+Husnova/
 ├── backend/
 │   ├── config/            # MongoDB & Redis client setup
 │   ├── controllers/       # auth, user, and JioSaavn-proxy logic
@@ -129,8 +129,8 @@ Ain-Music/
 ### 1️⃣ Clone the repo
 
 ```bash
-git clone https://github.com/M-Hussain921/Ain-Music.git
-cd Ain-Music
+git clone https://github.com/M-Hussain921/Husnova-web-player.git
+cd Husnova
 ```
 
 ### 2️⃣ Backend setup
@@ -176,8 +176,6 @@ cd ../frontend
 npm install
 npm run dev
 ```
-
-The app will be available at the Vite dev server URL (default `http://localhost:5173`).
 
 ---
 
