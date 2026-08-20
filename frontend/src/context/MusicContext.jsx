@@ -54,8 +54,8 @@ async function fetchSongById(id) {
     }
 
     return mapRawSongToSongs(results[0]);
-  } catch (err) {
-    console.error("Song fetch error:", err);
+  } catch (error) {
+    console.error("Song fetch error:", error);
     return null;
   }
 }
@@ -104,8 +104,8 @@ async function fetchAlbumsByQuery(query, limit = 10) {
       image: album.image?.[2]?.url || "https://via.placeholder.com/150",
       year: album.year,
     }));
-  } catch (err) {
-    console.warn("Album fetch error:", err);
+  } catch (error) {
+    console.warn("Album fetch error:", error);
     return [];
   }
 }
@@ -189,8 +189,8 @@ async function fetchArtistDetails(id) {
       topAlbums,
       allSongs,
     };
-  } catch (err) {
-    console.warn("Artist details fetch error:", err);
+  } catch (error) {
+    console.warn("Artist details fetch error:", error);
     return null;
   }
 }
