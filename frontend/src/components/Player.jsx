@@ -28,7 +28,6 @@ export const Player = ({ song }) => {
     shuffleQueue,
     isShuffled,
     currentIndex,
-    token
   } = useContext(MusicContext);
 
   const audioRef = useRef(null);
@@ -37,7 +36,6 @@ export const Player = ({ song }) => {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
-
 
   useEffect(() => {
     restartedRef.current = false;
@@ -65,61 +63,52 @@ export const Player = ({ song }) => {
     }
   }, [isPlaying]);
 
-useEffect(() => {
-  const audio = audioRef.current;
+  useEffect(() => {
+    const audio = audioRef.current;
 
-  if (!audio || !currentSong?.audioUrl) return;
+    if (!audio || !currentSong?.audioUrl) return;
 
-  audio.pause();
-
-  audio.src = currentSong.audioUrl;
-
-  setProgress(0);
-  setDuration(0);
-
-  const handleLoadedMetadata = () => {
-    setDuration(audio.duration);
-  };
-
-  const handleTimeUpdate = () => {
-    setProgress(audio.currentTime);
-  };
-
-  const handleEnded = () => {
-    playNext();
-  };
-
-  audio.addEventListener("loadedmetadata", handleLoadedMetadata);
-  audio.addEventListener("timeupdate", handleTimeUpdate);
-  audio.addEventListener("ended", handleEnded);
-
-  if (isPlaying) {
-    audio.play().catch((error) => {
-      if (error.name !== "AbortError") {
-        console.error("Audio play failed:", error);
-      }
-    });
-  }
-
-  return () => {
     audio.pause();
 
-    audio.removeEventListener(
-      "loadedmetadata",
-      handleLoadedMetadata
-    );
+    audio.src = currentSong.audioUrl;
 
-    audio.removeEventListener(
-      "timeupdate",
-      handleTimeUpdate
-    );
+    setProgress(0);
+    setDuration(0);
 
-    audio.removeEventListener(
-      "ended",
-      handleEnded
-    );
-  };
-}, [currentSong]);
+    const handleLoadedMetadata = () => {
+      setDuration(audio.duration);
+    };
+
+    const handleTimeUpdate = () => {
+      setProgress(audio.currentTime);
+    };
+
+    const handleEnded = () => {
+      playNext();
+    };
+
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("ended", handleEnded);
+
+    if (isPlaying) {
+      audio.play().catch((error) => {
+        if (error.name !== "AbortError") {
+          console.error("Audio play failed:", error);
+        }
+      });
+    }
+
+    return () => {
+      audio.pause();
+
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+
+      audio.removeEventListener("ended", handleEnded);
+    };
+  }, [currentSong]);
 
   const handlePreviousClick = () => {
     const audio = audioRef.current;
@@ -145,12 +134,12 @@ useEffect(() => {
   };
 
   const handlePlaylistSelect = (playlistId) => {
-    addSongToPlaylist(playlistId,token, currentSong);
+    addSongToPlaylist(playlistId, currentSong);
     setMenuOpen(false);
   };
 
   if (!currentSong) return null;
-  const isFav = favorites.some((f) => f.id === currentSong.id);
+  const isFav = likedSongs.some((f) => f.id === currentSong.id);
 
   return (
     <>
@@ -228,14 +217,14 @@ useEffect(() => {
         <div className="flex justify-center items-center gap-1.5 sm:gap-5 pr-1 sm:pr-5 shrink-0">
           <FavoriteButton item={currentSong} type="song" />
           <div className="relative">
-            <AddToPlaylistButton song={currentSong} />
+            <AddToPlaylistButton onClick={handleAddClick} />
 
             {menuOpen && (
               <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-surface border border-brand-light/40 rounded-lg shadow-xl w-36 sm:w-44 py-1 max-w-[90vw] z-10">
                 {playlists.map((pl) => (
                   <button
-                    key={pl.id}
-                    onClick={() => handlePlaylistSelect(pl.id)}
+                    key={pl._id}
+                    onClick={() => handlePlaylistSelect(pl._id)}
                     className="block w-full text-left px-3 py-2 text-sm text-text-secondary hover:bg-brand-light/20 hover:text-text-primary"
                   >
                     {pl.name}

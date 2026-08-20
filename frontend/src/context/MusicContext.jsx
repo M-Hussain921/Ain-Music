@@ -40,12 +40,6 @@ async function fetchSongById(id) {
 
     const data = await res.json();
 
-    console.log("========== SONG DEBUG ==========");
-    console.log("Requested ID:", id);
-    console.log("Status:", res.status);
-    console.log("Response:", data);
-    console.log("================================");
-
     if (!res.ok) {
       throw new Error(`Server returned ${res.status}`);
     }
@@ -53,8 +47,6 @@ async function fetchSongById(id) {
     const results = Array.isArray(data?.data)
       ? data.data
       : data?.data?.results || [];
-
-    console.log("Extracted results:", results);
 
     if (!results.length) {
       console.warn("NO SONG FOUND:", id);
@@ -223,7 +215,7 @@ export function MusicProvider({ children }) {
   });
   const [isPlaying, setIsPlaying] = useState(false);
 
- const [likedSongs, setLikedSongs] = useState([]);
+  const [likedSongs, setLikedSongs] = useState([]);
   const [likedArtists, setLikedArtists] = useState([]);
   const [savedAlbums, setSavedAlbums] = useState([]);
   const [playlists, setPlaylists] = useState([]);
@@ -535,14 +527,6 @@ export function MusicProvider({ children }) {
           body = { playlistId: item.id };
           break;
 
-        case "playlist-song":
-          url = `${BACKEND_API}/my-playlist`;
-          body = {
-            playlistId: extra.playlistId,
-            songId: item.id,
-          };
-          break;
-
         default:
           throw new Error("Invalid favorite type");
       }
@@ -571,21 +555,6 @@ export function MusicProvider({ children }) {
           );
           break;
 
-        case "playlist-song":
-          setPlaylists((prev) =>
-            prev.map((pl) => {
-              if (pl._id !== extra.playlistId) return pl;
-
-              return {
-                ...pl,
-                songs: data.liked
-                  ? [...pl.songs, item.id]
-                  : pl.songs.filter((id) => id !== item.id),
-              };
-            }),
-          );
-          break;
-
         default:
           break;
       }
@@ -606,7 +575,7 @@ export function MusicProvider({ children }) {
     }
   };
 
-  const addSongToPlaylist = async (playlistId, token, track) => {
+  const addSongToPlaylist = async (playlistId, track) => {
     try {
       const data = await authFetch(`${BACKEND_API}/my-playlist`, token, {
         method: "POST",

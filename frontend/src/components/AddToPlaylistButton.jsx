@@ -1,17 +1,18 @@
 import { useContext } from "react";
-import { MusicContext } from "../context/MusicContext";
 import { AuthContext } from "../context/AuthContext";
 import { AuthModalContext } from "../context/AuthModalContext";
 import { FiPlusCircle } from "react-icons/fi";
 
-export const AddToPlaylistButton = ({ song }) => {
-  const { addSongToPlaylist } = useContext(MusicContext);
+export const AddToPlaylistButton = ({ onClick }) => {
   const { token } = useContext(AuthContext);
   const { requireAuth } = useContext(AuthModalContext);
 
   const handleClick = (e) => {
     e.stopPropagation();
-    requireAuth(() => addSongToPlaylist(song, token));
+
+    requireAuth(() => {
+      onClick();
+    });
   };
 
   return (
