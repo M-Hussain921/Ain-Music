@@ -180,7 +180,7 @@ export const getLikedArtists = async (req, res) => {
           console.error("Artist fetch failed:", id);
           return null;
         }
-      })
+      }),
     );
 
     res.status(200).json({
@@ -267,6 +267,36 @@ export const getMyPlaylists = async (req, res) => {
         .json({ success: false, message: "playlists not found", data: null });
 
     res.status(200).json({ success: true, data: myPlaylists });
+  } catch (error) {
+    console.error("server error: ", error);
+    res.status(500).json({ message: "server error" });
+  }
+};
+
+export const getMyPlaylistsDetails = async (req, res) => {
+  const { myPlaylistId } = req.body;
+   if (!myPlaylistId) {
+      return res.status(400).json({ message: "My playlist id is require" });
+    }
+  try {
+    const myPlaylist = await playlists.findById(myPlaylistId);
+    if (!myPlaylist) {
+      return res.status(404).json({ message: "Playlist not found" });
+    }
+    console.log(myPlaylist)
+
+    const songsId = myPlaylist.songs||[];
+    console.log(songsId)
+    if (songsId.length === 0) {
+      return res.status(200).json({ message: "success", data: [] });
+    }
+
+    const songs = await apiService.fetchSongById(songsId);
+
+    res.status(200).json({
+      success: true,
+      data: Array.isArray(songs) ? songs.filter(Boolean) : [],
+    });
   } catch (error) {
     console.error("server error: ", error);
     res.status(500).json({ message: "server error" });

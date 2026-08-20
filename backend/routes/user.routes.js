@@ -9,12 +9,13 @@ import {
   getLikedArtists,
   createPlaylist,
   getMyPlaylists,
+  getMyPlaylistsDetails,
   addAndRemoveSongsToPlaylist,
   trackRecentlyPlayed,
   getRecentlyPlayed,
   getMostPlayedSongs,
   getMostPlayedArtists,
-  getMostPlayedPlaylists
+  getMostPlayedPlaylists,
 } from "../controllers/user.controller.js";
 
 const router = express.Router();
@@ -31,8 +32,9 @@ router.get("/liked-artists", authMiddleware, getLikedArtists);
 router.post("/create-playlist", authMiddleware, createPlaylist);
 router.post("/my-playlist", authMiddleware, addAndRemoveSongsToPlaylist);
 router.get("/my-playlists", authMiddleware, getMyPlaylists);
+router.get("/my-playlists-songs", authMiddleware, getMyPlaylistsDetails);
 
-router.post("/recently-played-songs",authMiddleware,trackRecentlyPlayed);
+router.post("/recently-played-songs", authMiddleware, trackRecentlyPlayed);
 router.get("/recently-played", authMiddleware, getRecentlyPlayed);
 
 router.get("/most-played-songs", authMiddleware, getMostPlayedSongs);
