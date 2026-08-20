@@ -7,9 +7,9 @@ import { ArtistCard } from "../components/ArtistCard";
 
 export const YourFavoritesPage = () => {
   const {
-    favorites,
-    favArtists,
-    favAlbums,
+    likedSongs,
+    likedArtists,
+    likedAlbums,
     currentSong,
     isPlaying,
     togglePlayPause,
@@ -19,9 +19,9 @@ export const YourFavoritesPage = () => {
   const navigate = useNavigate();
 
   const tabs = [
-    { key: "songs", label: "Songs", count: favorites?.length || 0 },
-    { key: "artists", label: "Artists", count: favArtists?.length || 0 },
-    { key: "albums", label: "Albums", count: favAlbums?.length || 0 },
+    { key: "songs", label: "Songs", count: likedSongs?.length || 0 },
+    { key: "artists", label: "Artists", count: likedArtists?.length || 0 },
+    { key: "albums", label: "Albums", count: likedAlbums?.length || 0 },
   ];
 
   return (
@@ -48,7 +48,7 @@ export const YourFavoritesPage = () => {
 
       {activeTab === "songs" && (
         <SongsList
-          songs={favorites}
+          songs={likedSongs}
           currentSong={currentSong}
           isPlaying={isPlaying}
           onSongClick={(song, index) => {
@@ -62,21 +62,21 @@ export const YourFavoritesPage = () => {
       )}
 
       {activeTab === "artists" &&
-        (favArtists?.length === 0 ? (
+        (likedArtists?.length === 0 ? (
           <p className="text-text-secondary">No liked artists yet.</p>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 sm:gap-6">
-            {favArtists?.map((artist) => (
+            {likedArtists?.map((artist) => (
               <ArtistCard key={artist.id} artist={artist} />
             ))}
           </div>
         ))}
 
       {activeTab === "albums" &&
-        (favAlbums?.length === 0 ? (
+        (likedAlbums?.length === 0 ? (
           <p className="text-text-secondary">No liked albums yet.</p>
         ) : (
-          <AlbumCard albums={favAlbums} />
+          <AlbumCard albums={likedAlbums} />
         ))}
     </div>
   );

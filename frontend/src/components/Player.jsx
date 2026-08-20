@@ -18,7 +18,7 @@ export const Player = ({ song }) => {
     currentSong,
     isPlaying,
     setIsPlaying,
-    favorites,
+    likedSongs,
     toggleFavorite,
     playlists,
     addSongToPlaylist,

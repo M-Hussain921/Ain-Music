@@ -223,9 +223,9 @@ export function MusicProvider({ children }) {
   });
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const [favorites, setFavorites] = useState([]);
-  const [favArtists, setFavArtists] = useState([]);
-  const [favAlbums, setFavAlbums] = useState([]);
+ const [likedSongs, setLikedSongs] = useState([]);
+  const [likedArtists, setLikedArtists] = useState([]);
+  const [savedAlbums, setSavedAlbums] = useState([]);
   const [playlists, setPlaylists] = useState([]);
 
   const [queue, setQueue] = useState([]);
@@ -554,19 +554,19 @@ export function MusicProvider({ children }) {
 
       switch (type) {
         case "song":
-          setFavorites((prev) =>
+          setLikedSongs((prev) =>
             data.liked ? [...prev, item] : prev.filter((i) => i.id !== item.id),
           );
           break;
 
         case "artist":
-          setFavArtists((prev) =>
+          setLikedArtists((prev) =>
             data.liked ? [...prev, item] : prev.filter((i) => i.id !== item.id),
           );
           break;
 
         case "album":
-          setFavAlbums((prev) =>
+          setSavedAlbums((prev) =>
             data.liked ? [...prev, item] : prev.filter((i) => i.id !== item.id),
           );
           break;
@@ -645,11 +645,11 @@ export function MusicProvider({ children }) {
             authFetch(`${BACKEND_API}/liked-playlists`, token),
             authFetch(`${BACKEND_API}/my-playlists`, token),
           ]);
-        setFavorites(songsData.data.map(mapRawSongToSongs));
-        setFavArtists(artistsData.data);
+        setLikedSongs(songsData.data.map(mapRawSongToSongs));
+        setLikedArtists(artistsData.data);
         const albumsData =
           playlistsData?.data?.data || playlistsData?.data || [];
-        setFavAlbums(Array.isArray(albumsData) ? albumsData : []);
+        setSavedAlbums(Array.isArray(albumsData) ? albumsData : []);
         setPlaylists(myPlaylistsData.data);
       } catch (error) {
         console.error("fetch user data error:", error);
@@ -668,9 +668,9 @@ export function MusicProvider({ children }) {
         currentIndex,
         isPlaying,
         setIsPlaying,
-        favArtists,
-        favAlbums,
-        favorites,
+        likedArtists,
+        savedAlbums,
+        likedSongs,
         toggleFavorite,
         playlists,
         createPlaylist,

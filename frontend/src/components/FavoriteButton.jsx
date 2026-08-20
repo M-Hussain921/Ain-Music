@@ -5,7 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 import { AuthModalContext } from "../context/AuthModalContext";
 
 export const FavoriteButton = ({ item, type }) => {
-  const { favorites, favArtists, favAlbums, playlists, toggleFavorite } =
+  const { likedSongs, likedArtists, savedAlbums, playlists, toggleFavorite } =
     useContext(MusicContext);
   const { token } = useContext(AuthContext);
   const { requireAuth } = useContext(AuthModalContext);
@@ -13,11 +13,11 @@ export const FavoriteButton = ({ item, type }) => {
   const getList = () => {
     switch (type) {
       case "song":
-        return favorites;
+        return likedSongs;
       case "artist":
-        return favArtists;
+        return likedArtists;
       case "album":
-        return favAlbums;
+        return savedAlbums;
       case "playlist-song":
         return playlists;
       default:

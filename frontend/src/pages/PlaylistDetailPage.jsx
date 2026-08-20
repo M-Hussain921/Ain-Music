@@ -3,10 +3,12 @@ import { useParams } from "react-router-dom";
 import { MusicContext } from "../context/MusicContext";
 import { PlayButton } from "../components/AudioPlayButton";
 import { FiMusic } from "react-icons/fi";
+import { SongsList } from "../components/SongsList";
 
 export const PlaylistDetailPage = () => {
   const { id } = useParams();
-  const { playlists, fetchSongById, playAlbum } = useContext(MusicContext);
+  const { playlists, fetchSongById, playAlbum, currentSong, isPlaying } =
+    useContext(MusicContext);
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -52,25 +54,13 @@ export const PlaylistDetailPage = () => {
       {songs.length === 0 ? (
         <p className="text-text-secondary">No songs in this playlist yet.</p>
       ) : (
-        <div className="flex flex-col gap-3">
-          {songs.map((song) => (
-            <div key={song.id} className="flex items-center gap-4">
-              <img
-                src={song.coverArt}
-                className="w-12 h-12 rounded object-cover"
-              />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-text-primary truncate">
-                  {song.title}
-                </p>
-                <p className="text-xs text-text-secondary truncate">
-                  {song.artist}
-                </p>
-              </div>
-              <PlayButton song={song} />
-            </div>
-          ))}
-        </div>
+        <SongsList
+          songs={songs}
+          currentSong={currentSong}
+          isPlaying={isPlaying}
+          pageSize={20}
+          showLoadMore={true}
+        />
       )}
     </div>
   );
